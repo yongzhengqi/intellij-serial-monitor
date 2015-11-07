@@ -5,6 +5,8 @@ import com.intellij.plugins.serialmonitor.service.SerialMonitorSettings;
 import javax.swing.*;
 import java.awt.event.*;
 
+import static com.intellij.plugins.serialmonitor.ui.SerialMonitorBundle.message;
+
 public class SerialMonitorSettingsDialog extends JDialog {
 
     private final SerialMonitorSettings settings = SerialMonitorSettings.getInstance();
@@ -18,7 +20,10 @@ public class SerialMonitorSettingsDialog extends JDialog {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
-        // TODO: setTitle, fixed size, centered
+
+        setTitle(message("settings-dialog.title"));
+        setResizable(false);
+        setLocationRelativeTo(null); // Center dialog on screen
 
         initListeners();
     }

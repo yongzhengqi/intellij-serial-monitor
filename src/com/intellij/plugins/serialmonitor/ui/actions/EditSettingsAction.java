@@ -5,13 +5,15 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.plugins.serialmonitor.ui.SerialMonitorSettingsDialog;
 
+import static com.intellij.plugins.serialmonitor.ui.SerialMonitorBundle.message;
+
 /**
  * @author Dmitry_Cherkas
  */
 public class EditSettingsAction extends DumbAwareAction {
 
     public EditSettingsAction() {
-        super("Edit Settings", "Open Serial monitor settings dialog", AllIcons.General.Settings);
+        super(message("edit-settings.title"), message("edit-settings.tooltip"), AllIcons.General.Settings);
     }
 
     @Override
