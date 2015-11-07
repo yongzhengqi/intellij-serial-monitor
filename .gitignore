@@ -1,0 +1,12 @@
+#IntelliJ IDEA
+out
+.idea/dictionaries
+.idea/libraries
+.idea/workspace.xml
+.idea/compiler.xml
+.idea/misc.xml
+.idea/profiles_settings.xml
+.idea/uiDesigner.xml
+.idea/vcs.xml
+.idea/copyright/profiles_settings.xml
+.DS_Store

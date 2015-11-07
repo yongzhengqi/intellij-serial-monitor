@@ -1,0 +1,43 @@
+<idea-plugin version="2">
+    <id>SerialPortMonitor</id>
+    <name>Serial Port Monitor</name>
+    <version>0.1</version>
+    <vendor email="cherkas.da@gmail.com" url="https://bitbucket.org/dmitry_cherkas/intellij-serial-monitor">
+        Dmitry Cherkas
+    </vendor>
+
+    <description><![CDATA[
+      Serial port monitor plugin for IntelliJ IDEA platform.
+    ]]></description>
+
+    <change-notes><![CDATA[
+      <p>0.1
+          <ul>
+              <li>Initial version</li>
+          </ul>
+      </p>
+    ]]>
+    </change-notes>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+    <idea-version since-build="141.0"/>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
+
+    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow id="Serial Monitor" anchor="bottom" icon="SerialMonitorIcons.OpenSerial_13x13"
+                    factoryClass="com.intellij.plugins.serialmonitor.SerialMonitorToolWindowFactory"
+                    canCloseContents="false" secondary="false"/>
+    </extensions>
+
+    <project-components>
+        <component>
+            <interface-class>com.intellij.plugins.serialmonitor.SerialMonitorView</interface-class>
+            <implementation-class>com.intellij.plugins.serialmonitor.SerialMonitorView</implementation-class>
+        </component>
+    </project-components>
+</idea-plugin>
