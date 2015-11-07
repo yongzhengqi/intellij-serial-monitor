@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * @author Dmitry_Cherkas
  */
-public class JsscSerialService implements SerialService {
+class JsscSerialService implements SerialService {
 
     private SerialPort port;
 

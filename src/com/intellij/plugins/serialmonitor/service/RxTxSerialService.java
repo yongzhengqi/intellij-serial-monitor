@@ -15,7 +15,7 @@ import java.util.TooManyListenersException;
 /**
  * @author Dmitry_Cherkas
  */
-public class RxTxSerialService implements SerialService {
+class RxTxSerialService implements SerialService {
 
     private static final int OPEN_TIMEOUT_MILLIS = 2000;
     public static final int READ_TIMEOUT_MILLIS = 100;
