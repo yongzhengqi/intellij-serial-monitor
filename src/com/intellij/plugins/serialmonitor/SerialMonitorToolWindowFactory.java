@@ -11,8 +11,6 @@ import org.jetbrains.annotations.NotNull;
  * @author Dmitry_Cherkas
  */
 public class SerialMonitorToolWindowFactory implements ToolWindowFactory, DumbAware {
-    public static final String TOOL_WINDOW_ID = "SerialMonitor";
-
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
         SerialMonitorView serialMonitorView = SerialMonitorView.getInstance(project);

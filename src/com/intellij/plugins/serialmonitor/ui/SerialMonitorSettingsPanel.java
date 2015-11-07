@@ -1,7 +1,6 @@
 package com.intellij.plugins.serialmonitor.ui;
 
 import com.intellij.openapi.components.ServiceManager;
-import com.intellij.plugins.serialmonitor.service.SerialMonitorSettings;
 import com.intellij.plugins.serialmonitor.service.SerialService;
 import com.intellij.util.ArrayUtil;
 import org.apache.commons.lang.StringUtils;
@@ -16,29 +15,16 @@ public class SerialMonitorSettingsPanel {
 
     public static final String DEFAULT_BAUD_RATE = "9600";
 
-    private final SerialService mySerialService = ServiceManager.getService(SerialService.class);
-    private final SerialMonitorSettings settings = SerialMonitorSettings.getInstance();
-
     private JComboBox myPortNames;
     private JComboBox myBaudRates;
     private JPanel myPanel;
 
     @SuppressWarnings("unchecked")
     public SerialMonitorSettingsPanel() {
+        SerialService mySerialService = ServiceManager.getService(SerialService.class);
         List<String> availablePortNames = mySerialService.getPortNames();
         myPortNames.setModel(new DefaultComboBoxModel(ArrayUtil.toObjectArray(availablePortNames)));
-
-        String savedPortName = settings.getPortName();
-        if (StringUtils.isNotEmpty(savedPortName) && availablePortNames.contains(savedPortName)) {
-            myPortNames.setSelectedItem(savedPortName);
-        }
-
-        int savedBaudRate = settings.getBaudRate();
-        if (savedBaudRate > 0) {
-            myBaudRates.setSelectedItem(String.valueOf(savedBaudRate));
-        } else {
-            myBaudRates.setSelectedItem(DEFAULT_BAUD_RATE);
-        }
+        myBaudRates.setSelectedItem(DEFAULT_BAUD_RATE);
     }
 
     public String getSelectedPortName() {
@@ -47,6 +33,18 @@ public class SerialMonitorSettingsPanel {
 
     public int getSelectedBaudRate() {
         return Integer.parseInt((String) myBaudRates.getSelectedItem());
+    }
+
+    public void setSelectedPortName(String portName) {
+        if (StringUtils.isNotEmpty(portName)) {
+            myPortNames.setSelectedItem(portName);
+        }
+    }
+
+    public void setSelectedBaudRate(int baudRate) {
+        if (baudRate > 0) {
+            myBaudRates.setSelectedItem(String.valueOf(baudRate));
+        }
     }
 
     public JComponent getComponent() {

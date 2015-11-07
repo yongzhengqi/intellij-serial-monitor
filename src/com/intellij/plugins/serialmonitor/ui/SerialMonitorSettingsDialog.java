@@ -9,7 +9,7 @@ import static com.intellij.plugins.serialmonitor.ui.SerialMonitorBundle.message;
 
 public class SerialMonitorSettingsDialog extends JDialog {
 
-    private final SerialMonitorSettings settings = SerialMonitorSettings.getInstance();
+    private final SerialMonitorSettings mySettings = SerialMonitorSettings.getInstance();
 
     private JPanel contentPane;
     private JButton buttonOK;
@@ -24,6 +24,9 @@ public class SerialMonitorSettingsDialog extends JDialog {
         setTitle(message("settings-dialog.title"));
         setResizable(false);
         setLocationRelativeTo(null); // Center dialog on screen
+
+        mySettingsPanel.setSelectedPortName(mySettings.getPortName());
+        mySettingsPanel.setSelectedBaudRate(mySettings.getBaudRate());
 
         initListeners();
     }
@@ -59,8 +62,8 @@ public class SerialMonitorSettingsDialog extends JDialog {
 
     private void onOK() {
         // TODO: add for validation, error tooltips (no ports available, etc)
-        settings.setPortName(mySettingsPanel.getSelectedPortName());
-        settings.setBaudRate(mySettingsPanel.getSelectedBaudRate());
+        mySettings.setPortName(mySettingsPanel.getSelectedPortName());
+        mySettings.setBaudRate(mySettingsPanel.getSelectedBaudRate());
         dispose();
     }
 
