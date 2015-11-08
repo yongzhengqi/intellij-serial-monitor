@@ -1,10 +1,14 @@
 package com.intellij.plugins.serialmonitor.service;
 
 import com.intellij.plugins.serialmonitor.SerialMonitorException;
+import com.intellij.util.Consumer;
+import com.intellij.util.containers.HashSet;
 import jssc.*;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Dmitry_Cherkas
@@ -12,6 +16,7 @@ import java.util.List;
 class JsscSerialService implements SerialService {
 
     private SerialPort port;
+    private Set<Consumer<String>> dataListeners = Collections.synchronizedSet(new HashSet<Consumer<String>>());
 
     @Override
     public List<String> getPortNames() {
@@ -63,7 +68,7 @@ class JsscSerialService implements SerialService {
     public String read() {
         try {
             byte[] buf = port.readBytes();
-            if (buf!= null && buf.length > 0) {
+            if (buf != null && buf.length > 0) {
                 return new String(buf);
             } else {
                 return "";
@@ -73,11 +78,44 @@ class JsscSerialService implements SerialService {
         }
     }
 
+    @Override
+    public void write(byte[] bytes) {
+        try {
+            port.writeBytes(bytes);
+        } catch (SerialPortException e) {
+            throw new SerialMonitorException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void addDataListener(Consumer<String> listener) {
+        if (listener == null || dataListeners.contains(listener)) {
+            throw new IllegalArgumentException();
+        }
+        dataListeners.add(listener);
+    }
+
     private class MySerialPortEventListener implements SerialPortEventListener {
         @Override
         public void serialEvent(SerialPortEvent serialEvent) {
             if (serialEvent.isRXCHAR()) {
-
+                if (dataListeners.isEmpty()) {
+                    return;
+                }
+                try {
+                    byte[] buf;
+                    synchronized (port) {
+                        buf = port.readBytes(serialEvent.getEventValue());
+                    }
+                    if (buf.length > 0) {
+                        String msg = new String(buf);
+                        for (Consumer<String> dataListener : dataListeners) {
+                            dataListener.consume(msg);
+                        }
+                    }
+                } catch (SerialPortException e) {
+                    throw new SerialMonitorException(e.getMessage(), e);
+                }
             }
         }
     }

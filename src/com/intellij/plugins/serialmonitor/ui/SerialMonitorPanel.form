@@ -42,7 +42,7 @@
           <text resource-bundle="SerialMonitorBundle" key="autoscroll.title"/>
         </properties>
       </component>
-      <component id="b060c" class="javax.swing.JComboBox" binding="myLineBreak">
+      <component id="b060c" class="javax.swing.JComboBox" binding="myLineEndings">
         <constraints>
           <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>

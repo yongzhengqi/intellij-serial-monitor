@@ -1,5 +1,7 @@
 package com.intellij.plugins.serialmonitor.service;
 
+import com.intellij.util.Consumer;
+
 import java.util.List;
 
 /**
@@ -13,4 +15,8 @@ public interface SerialService {
     void close();
 
     String read();
+
+    void write(byte[] bytes);
+
+    void addDataListener(Consumer<String> listener);
 }

@@ -2,15 +2,13 @@ package com.intellij.plugins.serialmonitor.service;
 
 import com.intellij.openapi.ui.Messages;
 import com.intellij.plugins.serialmonitor.SerialMonitorException;
+import com.intellij.util.Consumer;
 import purejavacomm.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.TooManyListenersException;
+import java.util.*;
 
 /**
  * @author Dmitry_Cherkas
@@ -24,7 +22,8 @@ class RxTxSerialService implements SerialService {
     private int stopBits = SerialPort.STOPBITS_1;
     private int parity = SerialPort.PARITY_NONE;
 
-    private SerialPort serialPort;
+    private SerialPort port;
+    private final Set<Consumer<String>> dataListeners = Collections.synchronizedSet(new HashSet<Consumer<String>>());
 
     @Override
     public List<String> getPortNames() {
@@ -38,17 +37,27 @@ class RxTxSerialService implements SerialService {
         return portNames;
     }
 
+    private boolean isConnected() {
+        return port != null;
+    }
+
     @Override
     public void connect(String portName, int baudRate) {
-        CommPortIdentifier portIdentifier;
-        try {
-            portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
-        } catch (NoSuchPortException e) {
-            throw new SerialMonitorException(e.getMessage(), e);
+        CommPortIdentifier portIdentifier = null;
+
+        Enumeration portIdentifiers = CommPortIdentifier.getPortIdentifiers();
+        while (portIdentifiers.hasMoreElements()) {
+            CommPortIdentifier pid = (CommPortIdentifier) portIdentifiers.nextElement();
+            if (pid.getName().equals(portName)) {
+                portIdentifier = pid;
+                break;
+            }
         }
 
-        if (portIdentifier.isCurrentlyOwned()) {
-            Messages.showInfoMessage("Port is currently in use.", "Error");
+        if (portIdentifier == null) {
+            Messages.showInfoMessage("Port not found.", "Error"); // TODO
+        } else if (portIdentifier.isCurrentlyOwned()) {
+            Messages.showInfoMessage("Port is currently in use.", "Error");// TODO
         } else {
             CommPort commPort;
             try {
@@ -58,19 +67,26 @@ class RxTxSerialService implements SerialService {
             }
 
             if (commPort instanceof SerialPort) {
-                serialPort = (SerialPort) commPort;
+                port = (SerialPort) commPort;
 
                 try {
-                    serialPort.enableReceiveTimeout(READ_TIMEOUT_MILLIS);
-                    serialPort.setSerialPortParams(baudRate, dataBits, stopBits, parity);
-                    serialPort.notifyOnDataAvailable(true);
+                    port.enableReceiveTimeout(READ_TIMEOUT_MILLIS);
+                    port.setSerialPortParams(baudRate, dataBits, stopBits, parity);
+                    port.notifyOnDataAvailable(true);
 
                     // start listening for incoming data
-                    serialPort.addEventListener(new SerialPortEventListener() {
+                    port.addEventListener(new SerialPortEventListener() {
                         @Override
                         public void serialEvent(SerialPortEvent event) {
                             if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
-                                Messages.showInfoMessage(read(), "Info");
+                                if (dataListeners.isEmpty()) {
+                                    return;
+                                }
+
+                                String data = read();
+                                for (Consumer<String> dataListener : dataListeners) {
+                                    dataListener.consume(data);
+                                }
                             }
                         }
                     });
@@ -83,19 +99,39 @@ class RxTxSerialService implements SerialService {
 
     @Override
     public void close() {
-        if (serialPort != null) {
-            serialPort.close();
-            serialPort = null;
+        if (port != null) {
+            port.close();
+            port = null;
         }
     }
 
     @Override
     public String read() {
         try {
-            return new String(read(serialPort.getInputStream()));
+            return new String(read(port.getInputStream()));
         } catch (IOException e) {
             throw new SerialMonitorException(e.getMessage(), e);
         }
+    }
+
+    @Override
+    public void write(byte[] bytes) {
+        if (!isConnected()) {
+            throw new IllegalStateException(port + " is not opened!");
+        }
+        try {
+            port.getOutputStream().write(bytes);
+        } catch (IOException e) {
+            throw new SerialMonitorException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void addDataListener(Consumer<String> listener) {
+        if (listener == null || dataListeners.contains(listener)) {
+            throw new IllegalArgumentException();
+        }
+        dataListeners.add(listener);
     }
 
     private byte[] read(InputStream is) throws IOException {
