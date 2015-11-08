@@ -7,7 +7,9 @@
     </vendor>
 
     <description><![CDATA[
-      Serial port monitor plugin for IntelliJ IDEA platform.
+      Serial port monitor plugin for IntelliJ IDEA platform aims to provide functionality, available in Arduino IDE
+      through Serial Monitor Tool. Only COM ports (both hardware and virtual) is currently supported. In order to use
+      virtual COM port please make sure to install all necessary drivers.
     ]]></description>
 
     <change-notes><![CDATA[
