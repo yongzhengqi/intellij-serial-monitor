@@ -64,14 +64,13 @@ public class SerialMonitorSettingsDialog extends JDialog {
     }
 
     private void onOK() {
-        // TODO: add for validation, error tooltips (no ports available, etc)
         mySettings.setPortName(mySettingsPanel.getSelectedPortName());
         mySettings.setBaudRate(mySettingsPanel.getSelectedBaudRate());
         dispose();
     }
 
     private void onCancel() {
-// add your code here if necessary
+        // add your code here if necessary
         dispose();
     }
 }

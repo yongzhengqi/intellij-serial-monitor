@@ -1,6 +1,5 @@
 package com.intellij.plugins.serialmonitor.service;
 
-import com.intellij.openapi.ui.Messages;
 import com.intellij.plugins.serialmonitor.SerialMonitorException;
 import com.intellij.util.Consumer;
 import purejavacomm.*;
@@ -43,21 +42,15 @@ class RxTxSerialService implements SerialService {
 
     @Override
     public void connect(String portName, int baudRate) {
-        CommPortIdentifier portIdentifier = null;
-
-        Enumeration portIdentifiers = CommPortIdentifier.getPortIdentifiers();
-        while (portIdentifiers.hasMoreElements()) {
-            CommPortIdentifier pid = (CommPortIdentifier) portIdentifiers.nextElement();
-            if (pid.getName().equals(portName)) {
-                portIdentifier = pid;
-                break;
-            }
+        CommPortIdentifier portIdentifier;
+        try {
+            portIdentifier = CommPortIdentifier.getPortIdentifier(portName);
+        } catch (NoSuchPortException e) {
+            throw new SerialMonitorException(e.getMessage(), e);
         }
 
-        if (portIdentifier == null) {
-            Messages.showInfoMessage("Port not found.", "Error"); // TODO
-        } else if (portIdentifier.isCurrentlyOwned()) {
-            Messages.showInfoMessage("Port is currently in use.", "Error");// TODO
+        if (portIdentifier.isCurrentlyOwned()) {
+            throw new SerialMonitorException("Port is currently in use.");
         } else {
             CommPort commPort;
             try {
