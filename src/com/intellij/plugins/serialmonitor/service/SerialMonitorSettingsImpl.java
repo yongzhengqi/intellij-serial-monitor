@@ -3,7 +3,7 @@ package com.intellij.plugins.serialmonitor.service;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.intellij.openapi.components.*;
-import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.diagnostic.Logger;
 import org.jdom.Element;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,17 +16,20 @@ import java.util.concurrent.TimeUnit;
 @State(
         name = "SerialMonitorSettings",
         storages = {
-                @Storage(
-                        file = StoragePathMacros.PROJECT_FILE + "/serialmonitor_settings.xml"
-                )}
+                @Storage(file = StoragePathMacros.PROJECT_FILE),
+                @Storage(file = StoragePathMacros.PROJECT_CONFIG_DIR + "/serialmonitor_settings.xml", scheme = StorageScheme.DIRECTORY_BASED)
+        }
 )
 class SerialMonitorSettingsImpl implements PersistentStateComponent<Element>, SerialMonitorSettings {
+    private static final Logger LOG = Logger.getInstance(SerialMonitorSettingsImpl.class.getName());
 
     private static final String DEFAULT_BAUD_RATE = "9600";
 
     private static final String SETTINGS_TAG = "SerialMonitorSettings";
     private static final String PORT_NAME = "PortName";
     private static final String BAUD_RATE = "BaudRate";
+    private static final String AUTO_SCROLL_ENABLED = "AutoScrollEnabled";
+    private static final String LINE_ENDING_SINDEX = "LineEndingsIndex";
 
     private SerialService serialService = ServiceManager.getService(SerialService.class);
 
@@ -38,58 +41,77 @@ class SerialMonitorSettingsImpl implements PersistentStateComponent<Element>, Se
         }
     }, 1000, TimeUnit.MILLISECONDS);
 
-    private String portName;
-    private int baudRate;
+    private String myPortName;
+    private int myBaudRate;
+    private boolean myAutoScrollEnabled;
+    private int myLineEndingsIndex;
 
     @Nullable
     @Override
     public Element getState() {
-        if (StringUtil.isEmptyOrSpaces(portName) && baudRate == 0) {
-            return null;
-        }
         final Element element = new Element(SETTINGS_TAG);
         if (getPortName() != null) {
             element.setAttribute(PORT_NAME, getPortName());
         }
         element.setAttribute(BAUD_RATE, String.valueOf(getBaudRate()));
+        element.setAttribute(AUTO_SCROLL_ENABLED, String.valueOf(isAutoScrollEnabled()));
+        element.setAttribute(LINE_ENDING_SINDEX, String.valueOf(getLineEndingsIndex()));
         return element;
     }
 
     @Override
-    public void loadState(Element state) {
+    public void loadState(Element element) {
         try {
-            setPortName(state.getAttributeValue(PORT_NAME));
-            setBaudRate(Integer.parseInt(state.getAttributeValue(BAUD_RATE, DEFAULT_BAUD_RATE)));
+            setPortName(element.getAttributeValue(PORT_NAME));
+            setBaudRate(Integer.parseInt(element.getAttributeValue(BAUD_RATE, DEFAULT_BAUD_RATE)));
+            setAutoScrollEnabled(Boolean.valueOf(element.getAttributeValue(AUTO_SCROLL_ENABLED)));
+            setLineEndingIndex(Integer.parseInt(element.getAttributeValue(LINE_ENDING_SINDEX)));
         } catch (Exception e) {
-            // ignore
+            LOG.error(e.getMessage(), e);
         }
     }
 
     @Override
     public String getPortName() {
-        return portName;
+        return myPortName;
     }
 
     @Override
     public void setPortName(String portName) {
-        this.portName = portName;
+        this.myPortName = portName;
     }
 
     @Override
     public int getBaudRate() {
-        return baudRate;
+        return myBaudRate;
     }
 
     @Override
     public void setBaudRate(int baudRate) {
-        this.baudRate = baudRate;
+        this.myBaudRate = baudRate;
     }
 
     @Override
     public boolean isValid() {
         List<String> availablePortNames = portNamesSupplier.get();
         return availablePortNames.contains(getPortName());
+    }
 
+    public boolean isAutoScrollEnabled() {
+        return myAutoScrollEnabled;
+    }
 
+    public void setAutoScrollEnabled(boolean autoScrollEnabled) {
+        myAutoScrollEnabled = autoScrollEnabled;
+    }
+
+    @Override
+    public int getLineEndingsIndex() {
+        return myLineEndingsIndex;
+    }
+
+    @Override
+    public void setLineEndingIndex(int lineEndingIndex) {
+        myLineEndingsIndex = lineEndingIndex;
     }
 }

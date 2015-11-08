@@ -23,7 +23,6 @@ public class SerialMonitorView extends AbstractProjectComponent {
         super(project);
     }
 
-
     public static SerialMonitorView getInstance(@NotNull Project project) {
         return project.getComponent(SerialMonitorView.class);
     }
@@ -33,7 +32,7 @@ public class SerialMonitorView extends AbstractProjectComponent {
         SimpleToolWindowPanel panel = new SimpleToolWindowPanel(false, true);
         Content content = ContentFactory.SERVICE.getInstance().createContent(panel, "", false);
 
-        SerialMonitorPanel serialMonitorPanel = new SerialMonitorPanel();
+        SerialMonitorPanel serialMonitorPanel = new SerialMonitorPanel(myProject);
         panel.setContent(serialMonitorPanel.getComponent());
 
         ActionToolbar toolbar = createToolbar();

@@ -13,4 +13,12 @@ public interface SerialMonitorSettings {
     void setBaudRate(int baudRate);
 
     boolean isValid();
+
+    boolean isAutoScrollEnabled();
+
+    void setAutoScrollEnabled(boolean autoScrollEnabled);
+
+    int getLineEndingsIndex();
+
+    void setLineEndingIndex(int lineEndingIndex);
 }
