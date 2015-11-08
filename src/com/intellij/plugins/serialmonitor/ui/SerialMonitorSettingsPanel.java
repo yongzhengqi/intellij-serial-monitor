@@ -13,8 +13,6 @@ import java.util.List;
  */
 public class SerialMonitorSettingsPanel {
 
-    public static final String DEFAULT_BAUD_RATE = "9600";
-
     private JComboBox myPortNames;
     private JComboBox myBaudRates;
     private JPanel myPanel;
@@ -24,11 +22,11 @@ public class SerialMonitorSettingsPanel {
         SerialService mySerialService = ServiceManager.getService(SerialService.class);
         List<String> availablePortNames = mySerialService.getPortNames();
         myPortNames.setModel(new DefaultComboBoxModel(ArrayUtil.toObjectArray(availablePortNames)));
-        myBaudRates.setSelectedItem(DEFAULT_BAUD_RATE);
     }
 
     public String getSelectedPortName() {
-        return String.valueOf(myPortNames.getSelectedItem());
+        Object selectedItem = myPortNames.getSelectedItem();
+        return selectedItem == null ? null : String.valueOf(selectedItem);
     }
 
     public int getSelectedBaudRate() {

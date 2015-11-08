@@ -32,9 +32,10 @@
 
         <applicationService serviceInterface="com.intellij.plugins.serialmonitor.service.SerialService"
                             serviceImplementation="com.intellij.plugins.serialmonitor.service.JsscSerialService"/>
-        <applicationService serviceInterface="com.intellij.plugins.serialmonitor.service.SerialMonitorSettings"
+        <projectService serviceInterface="com.intellij.plugins.serialmonitor.service.SerialMonitorSettings"
                             serviceImplementation="com.intellij.plugins.serialmonitor.service.SerialMonitorSettings"/>
-        <applicationConfigurable instance="com.intellij.plugins.serialmonitor.SerialMonitorConfigurable"/>
+
+        <projectConfigurable key="display-name" bundle="SerialMonitorBundle" groupId="tools" id="serialMonitor" instance="com.intellij.plugins.serialmonitor.SerialMonitorConfigurable"/>
     </extensions>
 
     <project-components>

@@ -18,7 +18,7 @@ public class EditSettingsAction extends DumbAwareAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
-        SerialMonitorSettingsDialog dialog = new SerialMonitorSettingsDialog();
+        SerialMonitorSettingsDialog dialog = new SerialMonitorSettingsDialog(e.getProject());
         dialog.pack();
         dialog.setVisible(true);
     }

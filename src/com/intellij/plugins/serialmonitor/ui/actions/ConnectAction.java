@@ -15,7 +15,6 @@ import static com.intellij.plugins.serialmonitor.ui.SerialMonitorBundle.message;
 public class ConnectAction extends DumbAwareAction {
 
     private final SerialService mySerialService = ServiceManager.getService(SerialService.class);
-    private SerialMonitorSettings mySettings = SerialMonitorSettings.getInstance();
 
     public ConnectAction() {
         super(message("connect.title"), message("connect.tooltip"), SerialMonitorIcons.Connect);
@@ -23,6 +22,7 @@ public class ConnectAction extends DumbAwareAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
+        SerialMonitorSettings mySettings = SerialMonitorSettings.getInstance(e.getProject());
         mySerialService.connect(mySettings.getPortName(), mySettings.getBaudRate());
     }
 }

@@ -1,7 +1,12 @@
 package com.intellij.plugins.serialmonitor;
 
+import com.google.common.base.Objects;
+import com.intellij.openapi.Disposable;
+import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Disposer;
 import com.intellij.plugins.serialmonitor.service.SerialMonitorSettings;
 import com.intellij.plugins.serialmonitor.ui.SerialMonitorSettingsPanel;
 import org.jetbrains.annotations.Nls;
@@ -15,13 +20,13 @@ import static com.intellij.plugins.serialmonitor.ui.SerialMonitorBundle.message;
 /**
  * @author Dmitry_Cherkas
  */
-public class SerialMonitorConfigurable implements SearchableConfigurable {
+public class SerialMonitorConfigurable implements SearchableConfigurable, Configurable.NoScroll, Disposable {
 
     private SerialMonitorSettingsPanel mySettingsPanel;
     private final SerialMonitorSettings mySettings;
 
-    public SerialMonitorConfigurable() {
-        mySettings = SerialMonitorSettings.getInstance();
+    public SerialMonitorConfigurable(Project project) {
+        mySettings = SerialMonitorSettings.getInstance(project);
     }
 
     @NotNull
@@ -61,8 +66,8 @@ public class SerialMonitorConfigurable implements SearchableConfigurable {
     @Override
     public boolean isModified() {
         return mySettingsPanel == null
-                || !mySettings.getPortName().equals(mySettingsPanel.getSelectedPortName())
-                || mySettings.getBaudRate()!= mySettingsPanel.getSelectedBaudRate();
+                || !Objects.equal(mySettings.getPortName(), mySettingsPanel.getSelectedPortName())
+                || mySettings.getBaudRate() != mySettingsPanel.getSelectedBaudRate();
     }
 
     @Override
@@ -83,6 +88,11 @@ public class SerialMonitorConfigurable implements SearchableConfigurable {
 
     @Override
     public void disposeUIResources() {
+        Disposer.dispose(this);
+    }
+
+    @Override
+    public void dispose() {
         mySettingsPanel = null;
     }
 }
