@@ -2,6 +2,7 @@ package com.intellij.plugins.serialmonitor;
 
 import com.google.common.base.Objects;
 import com.intellij.openapi.Disposable;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
@@ -26,7 +27,7 @@ public class SerialMonitorConfigurable implements SearchableConfigurable, Config
     private final SerialMonitorSettings mySettings;
 
     public SerialMonitorConfigurable(Project project) {
-        mySettings = SerialMonitorSettings.getInstance(project);
+        mySettings = ServiceManager.getService(project, SerialMonitorSettings.class);
     }
 
     @NotNull

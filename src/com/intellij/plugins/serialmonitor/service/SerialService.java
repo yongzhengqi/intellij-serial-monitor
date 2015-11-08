@@ -10,6 +10,8 @@ import java.util.List;
 public interface SerialService {
     List<String> getPortNames();
 
+    boolean isConnected();
+
     void connect(String portName, int baudRate);
 
     void close();

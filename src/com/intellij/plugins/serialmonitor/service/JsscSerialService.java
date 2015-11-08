@@ -23,6 +23,10 @@ class JsscSerialService implements SerialService {
         return Arrays.asList(SerialPortList.getPortNames());
     }
 
+    public boolean isConnected() {
+        return port != null;
+    }
+
     @Override
     public void connect(String portName, int baudRate) {
         int dataBits = SerialPort.DATABITS_8;
@@ -80,6 +84,9 @@ class JsscSerialService implements SerialService {
 
     @Override
     public void write(byte[] bytes) {
+        if (!isConnected()) {
+            throw new IllegalStateException(port + " is not opened!");
+        }
         try {
             port.writeBytes(bytes);
         } catch (SerialPortException e) {

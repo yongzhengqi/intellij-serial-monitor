@@ -8,7 +8,7 @@ import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.plugins.serialmonitor.ui.actions.ConnectAction;
+import com.intellij.plugins.serialmonitor.ui.actions.ConnectDisconnectAction;
 import com.intellij.plugins.serialmonitor.ui.actions.EditSettingsAction;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
@@ -46,7 +46,7 @@ public class SerialMonitorView extends AbstractProjectComponent {
     private ActionToolbar createToolbar() {
         DefaultActionGroup group = new DefaultActionGroup();
 
-        group.add(new ConnectAction());
+        group.add(new ConnectDisconnectAction());
         group.add(new EditSettingsAction());
 
         return ActionManager.getInstance().createActionToolbar(ActionPlaces.UNKNOWN, group, false);

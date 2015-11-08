@@ -1,5 +1,6 @@
 package com.intellij.plugins.serialmonitor.ui;
 
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.plugins.serialmonitor.service.SerialMonitorSettings;
 
@@ -18,7 +19,7 @@ public class SerialMonitorSettingsDialog extends JDialog {
     private SerialMonitorSettingsPanel mySettingsPanel;
 
     public SerialMonitorSettingsDialog(Project project) {
-        mySettings = SerialMonitorSettings.getInstance(project);
+        mySettings = ServiceManager.getService(project, SerialMonitorSettings.class);
 
         setContentPane(contentPane);
         setModal(true);

@@ -36,7 +36,7 @@ class RxTxSerialService implements SerialService {
         return portNames;
     }
 
-    private boolean isConnected() {
+    public boolean isConnected() {
         return port != null;
     }
 
