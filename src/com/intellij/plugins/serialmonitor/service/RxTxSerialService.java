@@ -110,7 +110,7 @@ class RxTxSerialService implements SerialService {
     @Override
     public void write(byte[] bytes) {
         if (!isConnected()) {
-            throw new IllegalStateException(port + " is not opened!");
+            throw new IllegalStateException("Port is not opened!");
         }
         try {
             port.getOutputStream().write(bytes);
