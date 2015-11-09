@@ -17,6 +17,7 @@ class JsscSerialService implements SerialService {
 
     private SerialPort port;
     private Set<Consumer<String>> dataListeners = Collections.synchronizedSet(new HashSet<Consumer<String>>());
+    private Set<Consumer<Boolean>> portStateListeners = Collections.synchronizedSet(new HashSet<Consumer<Boolean>>());
 
     @Override
     public List<String> getPortNames() {
@@ -51,6 +52,7 @@ class JsscSerialService implements SerialService {
         if (port == null) {
             throw new SerialMonitorException(String.format("Serial port ''%s'' not found. Did you select the right one from the Tools > Serial Port menu?", portName));
         }
+        notifyStateListeners(true); // notify successful connect
     }
 
     @Override
@@ -64,6 +66,7 @@ class JsscSerialService implements SerialService {
                 throw new SerialMonitorException(e.getMessage(), e);
             } finally {
                 port = null;
+                notifyStateListeners(false); // notify disconnect
             }
         }
     }
@@ -100,6 +103,17 @@ class JsscSerialService implements SerialService {
             throw new IllegalArgumentException();
         }
         dataListeners.add(listener);
+    }
+
+    @Override
+    public void addPortStateListener(Consumer<Boolean> listener) {
+        portStateListeners.add(listener);
+    }
+
+    private void notifyStateListeners(boolean isConnected) {
+        for (Consumer<Boolean> listener : portStateListeners) {
+            listener.consume(isConnected);
+        }
     }
 
     private class MySerialPortEventListener implements SerialPortEventListener {

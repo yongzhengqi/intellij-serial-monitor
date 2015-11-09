@@ -21,4 +21,6 @@ public interface SerialService {
     void write(byte[] bytes);
 
     void addDataListener(Consumer<String> listener);
+
+    void addPortStateListener(Consumer<Boolean> listener);
 }

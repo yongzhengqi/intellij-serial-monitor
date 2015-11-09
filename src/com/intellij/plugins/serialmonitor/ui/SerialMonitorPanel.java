@@ -58,6 +58,15 @@ public class SerialMonitorPanel implements Disposable {
             }
         });
 
+        mySerialService.addPortStateListener(new Consumer<Boolean>() {
+            @Override
+            public void consume(Boolean isConnected) {
+                myCommand.setEnabled(isConnected);
+                myLineEndings.setEnabled(isConnected);
+                mySend.setEnabled(isConnected);
+            }
+        });
+
         SerialMonitorSettings settings = ServiceManager.getService(project, SerialMonitorSettings.class);
         myLineEndings.setSelectedIndex(settings.getLineEndingsIndex());
 

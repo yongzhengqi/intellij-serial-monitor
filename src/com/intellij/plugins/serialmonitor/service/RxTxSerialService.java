@@ -23,6 +23,7 @@ class RxTxSerialService implements SerialService {
 
     private SerialPort port;
     private final Set<Consumer<String>> dataListeners = Collections.synchronizedSet(new HashSet<Consumer<String>>());
+    private Set<Consumer<Boolean>> portStateListeners = Collections.synchronizedSet(new com.intellij.util.containers.HashSet<Consumer<Boolean>>());
 
     @Override
     public List<String> getPortNames() {
@@ -51,42 +52,43 @@ class RxTxSerialService implements SerialService {
 
         if (portIdentifier.isCurrentlyOwned()) {
             throw new SerialMonitorException("Port is currently in use.");
-        } else {
-            CommPort commPort;
+        }
+
+        CommPort commPort;
+        try {
+            commPort = portIdentifier.open(this.getClass().getName(), OPEN_TIMEOUT_MILLIS);
+        } catch (PortInUseException e) {
+            throw new SerialMonitorException(e.getMessage(), e);
+        }
+
+        if (commPort instanceof SerialPort) {
+            port = (SerialPort) commPort;
+
             try {
-                commPort = portIdentifier.open(this.getClass().getName(), OPEN_TIMEOUT_MILLIS);
-            } catch (PortInUseException e) {
-                throw new SerialMonitorException(e.getMessage(), e);
-            }
+                port.enableReceiveTimeout(READ_TIMEOUT_MILLIS);
+                port.setSerialPortParams(baudRate, dataBits, stopBits, parity);
+                port.notifyOnDataAvailable(true);
 
-            if (commPort instanceof SerialPort) {
-                port = (SerialPort) commPort;
+                // start listening for incoming data
+                port.addEventListener(new SerialPortEventListener() {
+                    @Override
+                    public void serialEvent(SerialPortEvent event) {
+                        if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
+                            if (dataListeners.isEmpty()) {
+                                return;
+                            }
 
-                try {
-                    port.enableReceiveTimeout(READ_TIMEOUT_MILLIS);
-                    port.setSerialPortParams(baudRate, dataBits, stopBits, parity);
-                    port.notifyOnDataAvailable(true);
-
-                    // start listening for incoming data
-                    port.addEventListener(new SerialPortEventListener() {
-                        @Override
-                        public void serialEvent(SerialPortEvent event) {
-                            if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
-                                if (dataListeners.isEmpty()) {
-                                    return;
-                                }
-
-                                String data = read();
-                                for (Consumer<String> dataListener : dataListeners) {
-                                    dataListener.consume(data);
-                                }
+                            String data = read();
+                            for (Consumer<String> dataListener : dataListeners) {
+                                dataListener.consume(data);
                             }
                         }
-                    });
-                } catch (UnsupportedCommOperationException | TooManyListenersException e) {
-                    throw new SerialMonitorException(e.getMessage(), e);
-                }
+                    }
+                });
+            } catch (UnsupportedCommOperationException | TooManyListenersException e) {
+                throw new SerialMonitorException(e.getMessage(), e);
             }
+            notifyStateListeners(true);
         }
     }
 
@@ -95,6 +97,7 @@ class RxTxSerialService implements SerialService {
         if (port != null) {
             port.close();
             port = null;
+            notifyStateListeners(false);
         }
     }
 
@@ -125,6 +128,17 @@ class RxTxSerialService implements SerialService {
             throw new IllegalArgumentException();
         }
         dataListeners.add(listener);
+    }
+
+    @Override
+    public void addPortStateListener(Consumer<Boolean> listener) {
+        portStateListeners.add(listener);
+    }
+
+    private void notifyStateListeners(boolean isConnected) {
+        for (Consumer<Boolean> listener : portStateListeners) {
+            listener.consume(isConnected);
+        }
     }
 
     private byte[] read(InputStream is) throws IOException {
