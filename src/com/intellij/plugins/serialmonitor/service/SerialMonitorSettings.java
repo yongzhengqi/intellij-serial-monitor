@@ -14,10 +14,6 @@ public interface SerialMonitorSettings {
 
     boolean isValid();
 
-    boolean isAutoScrollEnabled();
-
-    void setAutoScrollEnabled(boolean autoScrollEnabled);
-
     int getLineEndingsIndex();
 
     void setLineEndingIndex(int lineEndingIndex);

@@ -4,28 +4,34 @@ import com.intellij.execution.filters.TextConsoleBuilder;
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
+import com.intellij.ide.actions.NextOccurenceToolbarAction;
+import com.intellij.ide.actions.PreviousOccurenceToolbarAction;
+import com.intellij.openapi.Disposable;
+import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Disposer;
 import com.intellij.plugins.serialmonitor.service.SerialMonitorSettings;
 import com.intellij.plugins.serialmonitor.service.SerialService;
-import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.util.Consumer;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Dmitry_Cherkas
  */
-public class SerialMonitorPanel {
+public class SerialMonitorPanel implements Disposable {
 
     private final SerialService mySerialService = ServiceManager.getService(SerialService.class);
 
     private JButton mySend;
     private JTextField myCommand;
     private JPanel myPanel;
-    private JCheckBox myAutoScrollEnabled; // TODO: currently unused
     private JComboBox myLineEndings;
     private JPanel myConsoleHolder;
     private ConsoleView myConsoleView;
@@ -53,42 +59,42 @@ public class SerialMonitorPanel {
         });
 
         SerialMonitorSettings settings = ServiceManager.getService(project, SerialMonitorSettings.class);
-        myAutoScrollEnabled.setSelected(settings.isAutoScrollEnabled());
         myLineEndings.setSelectedIndex(settings.getLineEndingsIndex());
 
         // register listener to update settings, if user preferences were changed
-        ActionListener saveSettingsListener = new MyPreferencesChangeListener(settings);
-        myAutoScrollEnabled.addActionListener(saveSettingsListener);
-        myLineEndings.addActionListener(saveSettingsListener);
+        myLineEndings.addActionListener(new MyPreferencesChangeListener(settings));
     }
 
     private void initConsoleView(Project project) {
         TextConsoleBuilder consoleBuilder = TextConsoleBuilderFactory.getInstance().createBuilder(project);
         consoleBuilder.setViewer(true);
         myConsoleView = consoleBuilder.getConsole();
+        JComponent consoleComponent = myConsoleView.getComponent(); // if I don't call this, I get NPE later on
 
-        //Content content = ContentFactory.SERVICE.getInstance().createContent(null, "", false);
+        DefaultActionGroup toolbarActions = new DefaultActionGroup();
+        ActionToolbar toolbar = ActionManager.getInstance().createActionToolbar(ActionPlaces.UNKNOWN, toolbarActions, false);
+        toolbarActions.addAll(createConsoleActions());
+        toolbar.setTargetComponent(consoleComponent);
+        myConsoleHolder.add(toolbar.getComponent(), BorderLayout.WEST);
 
-        JComponent consoleComponent = myConsoleView.getComponent();
-        //content.setActions(createConsoleActionGroup(), ActionPlaces.UNKNOWN, consoleComponent);
-        //content.setComponent(consoleComponent);
-
-        GridConstraints gridConstraints = new GridConstraints();
-        gridConstraints.setFill(GridConstraints.FILL_BOTH);
-        myConsoleHolder.add(consoleComponent, gridConstraints);
+        myConsoleHolder.add(consoleComponent, BorderLayout.CENTER);
     }
 
-/*
-    TODO: figure out, how to add common console actions
-    private DefaultActionGroup createConsoleActionGroup() {
-        DefaultActionGroup group = new DefaultActionGroup();
-
-        final AnAction[] actions = myConsoleView.createConsoleActions();
-        for (AnAction action : actions) {
-            group.add(action);
+    /**
+     * Allows filtering out unappropriate actions from toolbar.
+     */
+    private List<AnAction> createConsoleActions() {
+        List<AnAction> filteredActions = new ArrayList<>();
+        AnAction[] consoleActions = myConsoleView.createConsoleActions();
+        for (AnAction consoleAction : consoleActions) {
+            if (consoleAction instanceof PreviousOccurenceToolbarAction || consoleAction instanceof NextOccurenceToolbarAction) {
+                // do not need those
+                continue;
+            }
+            filteredActions.add(consoleAction);
         }
-        return group;
-    }*/
+        return filteredActions;
+    }
 
     private void send(String s) {
         switch (myLineEndings.getSelectedIndex()) {
@@ -109,6 +115,14 @@ public class SerialMonitorPanel {
         return myPanel;
     }
 
+    @Override
+    public void dispose() {
+        if (myConsoleView != null) {
+            Disposer.dispose(myConsoleView);
+            myConsoleView = null;
+        }
+    }
+
     private class MyPreferencesChangeListener implements ActionListener {
         private final SerialMonitorSettings mySettings;
 
@@ -120,10 +134,7 @@ public class SerialMonitorPanel {
         public void actionPerformed(ActionEvent e) {
             Object source = e.getSource();
 
-            if (source == myAutoScrollEnabled && myAutoScrollEnabled.isSelected() != mySettings.isAutoScrollEnabled()) {
-                // auto scroll option changed
-                mySettings.setAutoScrollEnabled(myAutoScrollEnabled.isSelected());
-            } else if (source == myLineEndings && myLineEndings.getSelectedIndex() != mySettings.getLineEndingsIndex()) {
+            if (source == myLineEndings && myLineEndings.getSelectedIndex() != mySettings.getLineEndingsIndex()) {
                 // line endings option changed
                 mySettings.setLineEndingIndex(myLineEndings.getSelectedIndex());
             } else {

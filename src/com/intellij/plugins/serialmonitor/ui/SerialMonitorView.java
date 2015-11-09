@@ -19,6 +19,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public class SerialMonitorView extends AbstractProjectComponent {
 
+    private SerialMonitorPanel mySerialMonitorPanel;
+
     protected SerialMonitorView(Project project) {
         super(project);
     }
@@ -32,8 +34,8 @@ public class SerialMonitorView extends AbstractProjectComponent {
         SimpleToolWindowPanel panel = new SimpleToolWindowPanel(false, true);
         Content content = ContentFactory.SERVICE.getInstance().createContent(panel, "", false);
 
-        SerialMonitorPanel serialMonitorPanel = new SerialMonitorPanel(myProject);
-        panel.setContent(serialMonitorPanel.getComponent());
+        mySerialMonitorPanel = new SerialMonitorPanel(myProject);
+        panel.setContent(mySerialMonitorPanel.getComponent());
 
         ActionToolbar toolbar = createToolbar();
         toolbar.setTargetComponent(panel);
@@ -51,4 +53,8 @@ public class SerialMonitorView extends AbstractProjectComponent {
         return ActionManager.getInstance().createActionToolbar(ActionPlaces.UNKNOWN, group, false);
     }
 
+    @Override
+    public void disposeComponent() {
+        mySerialMonitorPanel.dispose();
+    }
 }

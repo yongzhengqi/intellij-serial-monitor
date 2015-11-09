@@ -28,7 +28,6 @@ class SerialMonitorSettingsImpl implements PersistentStateComponent<Element>, Se
     private static final String SETTINGS_TAG = "SerialMonitorSettings";
     private static final String PORT_NAME = "PortName";
     private static final String BAUD_RATE = "BaudRate";
-    private static final String AUTO_SCROLL_ENABLED = "AutoScrollEnabled";
     private static final String LINE_ENDING_SINDEX = "LineEndingsIndex";
 
     private SerialService serialService = ServiceManager.getService(SerialService.class);
@@ -43,7 +42,6 @@ class SerialMonitorSettingsImpl implements PersistentStateComponent<Element>, Se
 
     private String myPortName;
     private int myBaudRate;
-    private boolean myAutoScrollEnabled;
     private int myLineEndingsIndex;
 
     @Nullable
@@ -54,7 +52,6 @@ class SerialMonitorSettingsImpl implements PersistentStateComponent<Element>, Se
             element.setAttribute(PORT_NAME, getPortName());
         }
         element.setAttribute(BAUD_RATE, String.valueOf(getBaudRate()));
-        element.setAttribute(AUTO_SCROLL_ENABLED, String.valueOf(isAutoScrollEnabled()));
         element.setAttribute(LINE_ENDING_SINDEX, String.valueOf(getLineEndingsIndex()));
         return element;
     }
@@ -64,7 +61,6 @@ class SerialMonitorSettingsImpl implements PersistentStateComponent<Element>, Se
         try {
             setPortName(element.getAttributeValue(PORT_NAME));
             setBaudRate(Integer.parseInt(element.getAttributeValue(BAUD_RATE, DEFAULT_BAUD_RATE)));
-            setAutoScrollEnabled(Boolean.valueOf(element.getAttributeValue(AUTO_SCROLL_ENABLED)));
             setLineEndingIndex(Integer.parseInt(element.getAttributeValue(LINE_ENDING_SINDEX)));
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
@@ -95,14 +91,6 @@ class SerialMonitorSettingsImpl implements PersistentStateComponent<Element>, Se
     public boolean isValid() {
         List<String> availablePortNames = portNamesSupplier.get();
         return availablePortNames.contains(getPortName());
-    }
-
-    public boolean isAutoScrollEnabled() {
-        return myAutoScrollEnabled;
-    }
-
-    public void setAutoScrollEnabled(boolean autoScrollEnabled) {
-        myAutoScrollEnabled = autoScrollEnabled;
     }
 
     @Override
