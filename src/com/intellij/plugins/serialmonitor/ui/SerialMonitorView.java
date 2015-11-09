@@ -57,4 +57,9 @@ public class SerialMonitorView extends AbstractProjectComponent {
     public void disposeComponent() {
         mySerialMonitorPanel.dispose();
     }
+
+    @Override
+    public void projectClosed() {
+        disposeComponent();
+    }
 }
