@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>SerialPortMonitor</id>
     <name>Serial Port Monitor</name>
-    <version>0.1</version>
+    <version>0.1.1</version>
     <vendor email="cherkas.da@gmail.com" url="https://bitbucket.org/dmitry_cherkas/intellij-serial-monitor">
         Dmitry Cherkas
     </vendor>
@@ -13,6 +13,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+      <p>0.1.1
+          <ul>
+              <li>fixed "EditorImpl hasn't been released" exception on idea shutdown</li>
+              <li>switched to purejavacomm SerialService implementation</li>
+          </ul>
+      </p>
       <p>0.1
           <ul>
               <li>Initial version</li>
@@ -33,7 +39,7 @@
                     canCloseContents="false" secondary="false"/>
 
         <applicationService serviceInterface="com.intellij.plugins.serialmonitor.service.SerialService"
-                            serviceImplementation="com.intellij.plugins.serialmonitor.service.JsscSerialService"/>
+                            serviceImplementation="com.intellij.plugins.serialmonitor.service.RxTxSerialService"/>
         <projectService serviceInterface="com.intellij.plugins.serialmonitor.service.SerialMonitorSettings"
                             serviceImplementation="com.intellij.plugins.serialmonitor.service.SerialMonitorSettingsImpl"/>
 
