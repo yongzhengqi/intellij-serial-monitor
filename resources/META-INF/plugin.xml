@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>SerialPortMonitor</id>
     <name>Serial Port Monitor</name>
-    <version>0.1.1</version>
+    <version>0.2</version>
     <vendor email="cherkas.da@gmail.com" url="https://bitbucket.org/dmitry_cherkas/intellij-serial-monitor">
         Dmitry Cherkas
     </vendor>
@@ -13,6 +13,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+      <p>0.2
+          <ul>
+              <li>implemented serial monitor status bar</li>
+              <li>added README</li>
+          </ul>
+      </p>
       <p>0.1.1
           <ul>
               <li>fixed "EditorImpl hasn't been released" exception on idea shutdown</li>
