@@ -51,5 +51,9 @@
             <interface-class>com.intellij.plugins.serialmonitor.ui.SerialMonitorView</interface-class>
             <implementation-class>com.intellij.plugins.serialmonitor.ui.SerialMonitorView</implementation-class>
         </component>
+        <component>
+            <implementation-class>com.intellij.plugins.serialmonitor.ui.status.SerialMonitorStatusComponent</implementation-class>
+            <interface-class>com.intellij.plugins.serialmonitor.ui.status.SerialMonitorStatusComponent</interface-class>
+        </component>
     </project-components>
 </idea-plugin>
