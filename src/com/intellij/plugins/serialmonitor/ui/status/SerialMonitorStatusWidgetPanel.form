@@ -7,19 +7,19 @@
     <properties/>
     <border type="none"/>
     <children>
-      <component id="11a0d" class="javax.swing.JLabel" binding="myIcon">
+      <component id="11a0d" class="javax.swing.JLabel" binding="myStatus">
         <constraints border-constraint="East"/>
         <properties>
           <horizontalAlignment value="11"/>
-          <text value=""/>
+          <text resource-bundle="SerialMonitorBundle" key="status.disconnected.text"/>
         </properties>
       </component>
-      <component id="190a3" class="javax.swing.JLabel" binding="myLabel">
+      <component id="190a3" class="javax.swing.JLabel">
         <constraints border-constraint="Center"/>
         <properties>
           <horizontalAlignment value="2"/>
           <horizontalTextPosition value="2"/>
-          <text value="########"/>
+          <text value="Serial:"/>
         </properties>
       </component>
     </children>

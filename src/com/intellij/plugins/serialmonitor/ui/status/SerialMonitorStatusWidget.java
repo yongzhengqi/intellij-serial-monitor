@@ -5,7 +5,6 @@ import com.intellij.openapi.wm.StatusBar;
 import com.intellij.plugins.serialmonitor.service.SerialMonitorSettings;
 import com.intellij.plugins.serialmonitor.service.SerialService;
 import com.intellij.util.Consumer;
-import icons.SerialMonitorIcons;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,20 +25,21 @@ public class SerialMonitorStatusWidget implements CustomStatusBarWidget {
         myPanel = new SerialMonitorStatusWidgetPanel();
         mySettings = settings;
 
-        myPanel.setIcon(SerialMonitorIcons.Disconnect);
         serialService.addPortStateListener(new Consumer<Boolean>() {
             @Override
             public void consume(Boolean isConnected) {
-                myPanel.setVisible(isConnected);
-                if(isConnected) {
+                String text;
+                String tooltip = null;
+                if (isConnected) {
                     String port = mySettings.getPortName();
                     int baud = mySettings.getBaudRate();
 
-                    String text = message("status.connected.text", port, baud);
-                    String tooltip = message("status.connected.tooltip", port, baud);
-
-                    myPanel.setText(text, tooltip);
+                    text = message("status.connected.text", port, baud);
+                    tooltip = message("status.connected.tooltip", port, baud);
+                } else {
+                    text = message("status.disconnected.text");
                 }
+                myPanel.setText(text, tooltip);
             }
         });
     }
@@ -63,7 +63,6 @@ public class SerialMonitorStatusWidget implements CustomStatusBarWidget {
 
     @Override
     public void install(@NotNull StatusBar statusBar) {
-        statusBar.toString();
     }
 
     @Override
