@@ -1,18 +1,34 @@
 <idea-plugin version="2">
     <id>SerialPortMonitor</id>
     <name>Serial Port Monitor</name>
-    <version>0.2</version>
+    <version>0.3</version>
     <vendor email="cherkas.da@gmail.com" url="https://bitbucket.org/dmitry_cherkas/intellij-serial-monitor">
         Dmitry Cherkas
     </vendor>
 
     <description><![CDATA[
-      Serial port monitor plugin for IntelliJ IDEA platform aims to provide functionality, available in Arduino IDE
-      through Serial Monitor Tool. Only COM port (both hardware and virtual) is currently supported. In order to use
+      This plugin aims to leverage Arduino development with CLion by providing Serial Monitor Tool Window. It allows you to communicate to your
+      Arduino device without leaving the IDE. Functionality is pretty similar to those, available in Arduino IDE through "Serial Monitor Tool".
+      <br/><br/>
+
+      <b>Features:</b>
+      <ul>
+       <li>Serial Monitor Tool Window with project-based persistent settings</li>
+       <li>Status widget</li>
+       <li>Duplex Console View (Regular view + HEX)</li>
+      </ul>
+      <br/>
+      <b>Note:</b> Only COM port (both hardware and virtual) is currently supported. In order to use
       virtual COM port please make sure to install all necessary drivers.
     ]]></description>
 
     <change-notes><![CDATA[
+      <p>0.3
+          <ul>
+              <li>implemented duplex console to switch between HEX/regular views</li>
+              <li>changed behaviour of status widget</li>
+          </ul>
+      </p>
       <p>0.2
           <ul>
               <li>implemented serial monitor status bar</li>
@@ -47,9 +63,13 @@
         <applicationService serviceInterface="com.intellij.plugins.serialmonitor.service.SerialService"
                             serviceImplementation="com.intellij.plugins.serialmonitor.service.RxTxSerialService"/>
         <projectService serviceInterface="com.intellij.plugins.serialmonitor.service.SerialMonitorSettings"
-                            serviceImplementation="com.intellij.plugins.serialmonitor.service.SerialMonitorSettingsImpl"/>
+                        serviceImplementation="com.intellij.plugins.serialmonitor.service.SerialMonitorSettingsImpl"/>
 
-        <projectConfigurable key="display-name" bundle="SerialMonitorBundle" groupId="tools" id="settings.serialmonitor" instance="com.intellij.plugins.serialmonitor.SerialMonitorConfigurable"/>
+        <applicationService serviceInterface="com.intellij.plugins.serialmonitor.ui.console.SerialMonitorConsoleBuilderFactory"
+                            serviceImplementation="com.intellij.plugins.serialmonitor.ui.console.SerialMonitorConsoleBuilderFactory"/>
+
+        <projectConfigurable key="display-name" bundle="SerialMonitorBundle" groupId="tools" id="settings.serialmonitor"
+                             instance="com.intellij.plugins.serialmonitor.SerialMonitorConfigurable"/>
     </extensions>
 
     <project-components>
@@ -58,7 +78,8 @@
             <implementation-class>com.intellij.plugins.serialmonitor.ui.SerialMonitorView</implementation-class>
         </component>
         <component>
-            <implementation-class>com.intellij.plugins.serialmonitor.ui.status.SerialMonitorStatusComponent</implementation-class>
+            <implementation-class>com.intellij.plugins.serialmonitor.ui.status.SerialMonitorStatusComponent
+            </implementation-class>
             <interface-class>com.intellij.plugins.serialmonitor.ui.status.SerialMonitorStatusComponent</interface-class>
         </component>
     </project-components>

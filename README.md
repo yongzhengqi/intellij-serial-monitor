@@ -1,10 +1,27 @@
 # Serial Monitor plugin for IntelliJ IDEA Platform #
-Serial port monitor plugin for IntelliJ IDEA platform aims to provide functionality, available in Arduino IDE through Serial Monitor Tool. Only COM port (both hardware and virtual) is currently supported. In order to use virtual COM port please make sure to install all necessary drivers.
+This plugin aims to leverage Arduino development with CLion by providing Serial Monitor Tool Window. It allows you to communicate to your Arduino device without leaving the IDE. Functionality is pretty similar to those, available in Arduino IDE through "Serial Monitor Tool".
+**Note:** Only COM port (both hardware and virtual) is currently supported. In order to use virtual COM port please make sure to install all necessary drivers.
 
-## Screenshot ##
-![serialMonitorToolbar.PNG](https://bitbucket.org/repo/GdXK46/images/2572690769-serialMonitorToolbar.PNG)
+## Features ##
+- Serial Monitor Tool Window with project-based persistent settings
+- Status widget
+- Duplex Console View (Regular view + HEX)
+
+## Screenshots ##
+
+### Regular View ###
+![SerialMonitorRegular.PNG](https://bitbucket.org/repo/GdXK46/images/1110632912-SerialMonitorRegular.PNG)
+
+### HEX View ###
+![SerialMonitorHEX.PNG](https://bitbucket.org/repo/GdXK46/images/3293739962-SerialMonitorHEX.PNG)
+
+### Status Widget ###
+![SerialMonitorWidget.PNG](https://bitbucket.org/repo/GdXK46/images/1180778625-SerialMonitorWidget.PNG)
 
 ## Change Notes ##
+- **0.3**
+    - implemented duplex console to switch between HEX/regular views
+    - changed behaviour of status widget
 - **0.2**
     - implemented serial monitor status bar
     - added README

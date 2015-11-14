@@ -20,5 +20,7 @@ public class SerialMonitorIcons {
     public static final Icon Connect = load("/icons/Connect_16x16.png"); // 16x16
     public static final Icon Disconnect = load("/icons/Disconnect_16x16.png"); // 16x16
 
+    public static final Icon SwitchToHex = load("/icons/hex_16x16.png"); // 16x16
+
     public static final Icon InvalidSettingsConnect = LayeredIcon.create(Connect, AllIcons.Nodes.ErrorMark);
 }
