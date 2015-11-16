@@ -152,4 +152,9 @@ class RxTxSerialService implements SerialService {
         }
         return output.toByteArray();
     }
+
+    @Override
+    public void dispose() {
+        close();
+    }
 }

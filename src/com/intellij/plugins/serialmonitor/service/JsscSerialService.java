@@ -116,6 +116,11 @@ class JsscSerialService implements SerialService {
         }
     }
 
+    @Override
+    public void dispose() {
+        close();
+    }
+
     private class MySerialPortEventListener implements SerialPortEventListener {
         @Override
         public void serialEvent(SerialPortEvent serialEvent) {

@@ -1,5 +1,6 @@
 package com.intellij.plugins.serialmonitor.service;
 
+import com.intellij.openapi.Disposable;
 import com.intellij.util.Consumer;
 
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.List;
 /**
  * @author Dmitry_Cherkas
  */
-public interface SerialService {
+public interface SerialService extends Disposable {
     List<String> getPortNames();
 
     boolean isConnected();
