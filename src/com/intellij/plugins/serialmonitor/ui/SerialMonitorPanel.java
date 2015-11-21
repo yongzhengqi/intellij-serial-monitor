@@ -21,6 +21,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 /**
  * @author Dmitry_Cherkas
@@ -34,7 +36,7 @@ public class SerialMonitorPanel implements Disposable {
     private final Project myProject;
 
     private JButton mySend;
-    private JTextField myCommand;
+    private CommandsComboBox myCommand;
     private JPanel myPanel;
     private JComboBox myLineEndings;
     private JPanel myConsoleHolder;
@@ -46,10 +48,24 @@ public class SerialMonitorPanel implements Disposable {
 
         initConsoleView();
 
+        myCommand.setProject(myProject);
+        myCommand.setHistorySize(10);
+        myCommand.addKeyboardListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                // send on CTRL + ENTER
+                if (e.isControlDown() && e.getKeyChar() == KeyEvent.VK_ENTER) {
+                    myCommand.hidePopup();
+                    mySend.doClick();
+                }
+            }
+        });
+
         mySend.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 send(myCommand.getText());
+                myCommand.addCurrentTextToHistory();
                 myCommand.setText("");
             }
         });
