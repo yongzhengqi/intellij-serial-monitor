@@ -16,8 +16,8 @@ import java.util.Set;
 class JsscSerialService implements SerialService {
 
     private SerialPort port;
-    private Set<Consumer<String>> dataListeners = Collections.synchronizedSet(new HashSet<Consumer<String>>());
-    private Set<Consumer<Boolean>> portStateListeners = Collections.synchronizedSet(new HashSet<Consumer<Boolean>>());
+    private final Set<Consumer<String>> dataListeners = Collections.synchronizedSet(new HashSet<Consumer<String>>());
+    private final Set<Consumer<Boolean>> portStateListeners = Collections.synchronizedSet(new HashSet<Consumer<Boolean>>());
 
     @Override
     public List<String> getPortNames() {
@@ -60,6 +60,7 @@ class JsscSerialService implements SerialService {
         if (port != null) {
             try {
                 if (port.isOpened()) {
+                    port.removeEventListener();
                     port.closePort();  // close the port
                 }
             } catch (SerialPortException e) {
@@ -118,21 +119,20 @@ class JsscSerialService implements SerialService {
 
     @Override
     public void dispose() {
+        dataListeners.clear();
+        portStateListeners.clear();
         close();
     }
 
     private class MySerialPortEventListener implements SerialPortEventListener {
         @Override
-        public void serialEvent(SerialPortEvent serialEvent) {
+        public synchronized void serialEvent(SerialPortEvent serialEvent) {
             if (serialEvent.isRXCHAR()) {
                 if (dataListeners.isEmpty()) {
                     return;
                 }
                 try {
-                    byte[] buf;
-                    synchronized (port) {
-                        buf = port.readBytes(serialEvent.getEventValue());
-                    }
+                    byte[] buf = port.readBytes(serialEvent.getEventValue());
                     if (buf.length > 0) {
                         String msg = new String(buf);
                         for (Consumer<String> dataListener : dataListeners) {
