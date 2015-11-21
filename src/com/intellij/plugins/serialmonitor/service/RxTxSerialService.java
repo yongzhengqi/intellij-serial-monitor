@@ -131,8 +131,18 @@ class RxTxSerialService implements SerialService {
     }
 
     @Override
+    public void removeDataListener(Consumer<String> listener) {
+        dataListeners.remove(listener);
+    }
+
+    @Override
     public void addPortStateListener(Consumer<Boolean> listener) {
         portStateListeners.add(listener);
+    }
+
+    @Override
+    public void removePortStateListener(Consumer<Boolean> listener) {
+        portStateListeners.remove(listener);
     }
 
     private void notifyStateListeners(boolean isConnected) {

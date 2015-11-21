@@ -23,10 +23,12 @@ import static com.intellij.plugins.serialmonitor.ui.SerialMonitorBundle.message;
  */
 public class SerialMonitorConfigurable implements SearchableConfigurable, Configurable.NoScroll, Disposable {
 
+    private final Project myProject;
     private SerialMonitorSettingsPanel mySettingsPanel;
     private final SerialMonitorSettings mySettings;
 
     public SerialMonitorConfigurable(Project project) {
+        myProject = project;
         mySettings = ServiceManager.getService(project, SerialMonitorSettings.class);
     }
 
@@ -58,7 +60,7 @@ public class SerialMonitorConfigurable implements SearchableConfigurable, Config
     @Override
     public JComponent createComponent() {
         if (mySettingsPanel == null) {
-            mySettingsPanel = new SerialMonitorSettingsPanel();
+            mySettingsPanel = new SerialMonitorSettingsPanel(myProject);
         }
         reset();
         return mySettingsPanel.getComponent();

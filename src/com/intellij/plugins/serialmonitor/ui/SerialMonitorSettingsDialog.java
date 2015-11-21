@@ -3,6 +3,7 @@ package com.intellij.plugins.serialmonitor.ui;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.plugins.serialmonitor.service.SerialMonitorSettings;
+import com.intellij.plugins.serialmonitor.service.SerialService;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -20,6 +21,7 @@ public class SerialMonitorSettingsDialog extends JDialog {
 
     public SerialMonitorSettingsDialog(Project project) {
         mySettings = ServiceManager.getService(project, SerialMonitorSettings.class);
+        mySettingsPanel.populatePortNames(ServiceManager.getService(project, SerialService.class).getPortNames());
 
         setContentPane(contentPane);
         setModal(true);

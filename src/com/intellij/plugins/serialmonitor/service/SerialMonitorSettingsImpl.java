@@ -4,6 +4,7 @@ import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.intellij.openapi.components.*;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.project.Project;
 import org.jdom.Element;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,19 +31,24 @@ class SerialMonitorSettingsImpl implements PersistentStateComponent<Element>, Se
     private static final String BAUD_RATE = "BaudRate";
     private static final String LINE_ENDING_SINDEX = "LineEndingsIndex";
 
-    private SerialService serialService = ServiceManager.getService(SerialService.class);
+    private final SerialService mySerialService;
 
     // Memoizing available ports for better performance
-    private Supplier<List<String>> portNamesSupplier = Suppliers.memoizeWithExpiration(new Supplier<List<String>>() {
-        @Override
-        public List<String> get() {
-            return serialService.getPortNames();
-        }
-    }, 1000, TimeUnit.MILLISECONDS);
+    private final Supplier<List<String>> portNamesSupplier;
 
     private String myPortName;
     private int myBaudRate;
     private int myLineEndingsIndex;
+
+    public SerialMonitorSettingsImpl(Project project) {
+        mySerialService = ServiceManager.getService(project, SerialService.class);
+        portNamesSupplier = Suppliers.memoizeWithExpiration(new Supplier<List<String>>() {
+            @Override
+            public List<String> get() {
+                return mySerialService.getPortNames();
+            }
+        }, 1000, TimeUnit.MILLISECONDS);
+    }
 
     @Nullable
     @Override

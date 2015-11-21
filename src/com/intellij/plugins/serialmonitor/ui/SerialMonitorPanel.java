@@ -29,11 +29,14 @@ import java.awt.event.KeyEvent;
  */
 public class SerialMonitorPanel implements Disposable {
 
-    private final SerialService mySerialService = ServiceManager.getService(SerialService.class);
     private final NotificationsService myNotificationsService = ServiceManager.getService(NotificationsService.class);
 
+    private final SerialService mySerialService;
     private final SerialMonitorSettings mySettings;
     private final Project myProject;
+
+    private final Consumer<Boolean> portStateListener;
+    private final Consumer<String> dataListener;
 
     private JButton mySend;
     private CommandsComboBox myCommand;
@@ -44,6 +47,7 @@ public class SerialMonitorPanel implements Disposable {
 
     public SerialMonitorPanel(final Project project) {
         myProject = project;
+        mySerialService = ServiceManager.getService(myProject, SerialService.class);
         mySettings = ServiceManager.getService(myProject, SerialMonitorSettings.class);
 
         initConsoleView();
@@ -70,21 +74,23 @@ public class SerialMonitorPanel implements Disposable {
             }
         });
 
-        mySerialService.addDataListener(new Consumer<String>() {
+        dataListener = new Consumer<String>() {
             @Override
             public void consume(final String s) {
                 myConsoleView.print(s, ConsoleViewContentType.NORMAL_OUTPUT);
             }
-        });
+        };
+        mySerialService.addDataListener(dataListener);
 
-        mySerialService.addPortStateListener(new Consumer<Boolean>() {
+        portStateListener = new Consumer<Boolean>() {
             @Override
             public void consume(Boolean isConnected) {
                 myCommand.setEnabled(isConnected);
                 myLineEndings.setEnabled(isConnected);
                 mySend.setEnabled(isConnected);
             }
-        });
+        };
+        mySerialService.addPortStateListener(portStateListener);
 
         myLineEndings.setSelectedIndex(mySettings.getLineEndingsIndex());
         // register listener to update settings, if user preferences were changed
@@ -142,5 +148,7 @@ public class SerialMonitorPanel implements Disposable {
             Disposer.dispose(myConsoleView);
             myConsoleView = null;
         }
+        mySerialService.removePortStateListener(portStateListener);
+        mySerialService.removeDataListener(dataListener);
     }
 }

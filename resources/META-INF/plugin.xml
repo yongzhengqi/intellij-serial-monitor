@@ -70,7 +70,7 @@
         <applicationService serviceImplementation="com.intellij.plugins.serialmonitor.ui.NotificationsService"
                             serviceInterface="com.intellij.plugins.serialmonitor.ui.NotificationsService"/>
 
-        <applicationService serviceInterface="com.intellij.plugins.serialmonitor.service.SerialService"
+        <projectService serviceInterface="com.intellij.plugins.serialmonitor.service.SerialService"
                             serviceImplementation="com.intellij.plugins.serialmonitor.service.JsscSerialService"/>
 
         <projectService serviceInterface="com.intellij.plugins.serialmonitor.service.SerialMonitorSettings"

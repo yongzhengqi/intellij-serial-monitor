@@ -1,5 +1,7 @@
 package com.intellij.plugins.serialmonitor.ui.status;
 
+import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.CustomStatusBarWidget;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.plugins.serialmonitor.service.SerialMonitorSettings;
@@ -16,16 +18,19 @@ import static com.intellij.plugins.serialmonitor.ui.SerialMonitorBundle.message;
  * @author Dmitry_Cherkas
  */
 public class SerialMonitorStatusWidget implements CustomStatusBarWidget {
+    private final SerialService mySerialService;
+    private final SerialMonitorSettings mySettings;
+
+    private final Consumer<Boolean> portStateListener;
 
     private SerialMonitorStatusWidgetPanel myPanel;
 
-    private final SerialMonitorSettings mySettings;
-
-    public SerialMonitorStatusWidget(SerialService serialService, SerialMonitorSettings settings) {
+    public SerialMonitorStatusWidget(Project project) {
+        mySerialService = ServiceManager.getService(project, SerialService.class);
+        mySettings = ServiceManager.getService(project, SerialMonitorSettings.class);
         myPanel = new SerialMonitorStatusWidgetPanel();
-        mySettings = settings;
 
-        serialService.addPortStateListener(new Consumer<Boolean>() {
+        portStateListener = new Consumer<Boolean>() {
             @Override
             public void consume(Boolean isConnected) {
                 String text;
@@ -41,7 +46,8 @@ public class SerialMonitorStatusWidget implements CustomStatusBarWidget {
                 }
                 myPanel.setText(text, tooltip);
             }
-        });
+        };
+        mySerialService.addPortStateListener(portStateListener);
     }
 
     @Override
@@ -67,6 +73,7 @@ public class SerialMonitorStatusWidget implements CustomStatusBarWidget {
 
     @Override
     public void dispose() {
+        mySerialService.removePortStateListener(portStateListener);
         myPanel = null;
     }
 }

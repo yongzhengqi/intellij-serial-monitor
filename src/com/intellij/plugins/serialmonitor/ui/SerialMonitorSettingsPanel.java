@@ -2,6 +2,7 @@ package com.intellij.plugins.serialmonitor.ui;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.plugins.serialmonitor.service.SerialService;
 import com.intellij.util.ArrayUtil;
 import org.apache.commons.lang.StringUtils;
@@ -26,11 +27,12 @@ public class SerialMonitorSettingsPanel {
     private JSeparator mySeparator;
 
     @SuppressWarnings("unchecked")
-    public SerialMonitorSettingsPanel() {
-        // populate myPortNames
-        List<String> availablePortNames = ServiceManager.getService(SerialService.class).getPortNames();
-        myPortNames.setModel(new DefaultComboBoxModel(ArrayUtil.toObjectArray(availablePortNames)));
+    public SerialMonitorSettingsPanel(Project project) {
+        this();
+        populatePortNames(ServiceManager.getService(project, SerialService.class).getPortNames());
+    }
 
+    public SerialMonitorSettingsPanel() {
         // configure Settings Validation
         myWarningLabel.setIcon(AllIcons.RunConfigurations.ConfigurationWarning);
         MySettingsPanelChangeListener changeListener = new MySettingsPanelChangeListener();
@@ -38,6 +40,11 @@ public class SerialMonitorSettingsPanel {
         myPortNames.addActionListener(changeListener);
         myBaudRates.addActionListener(changeListener);
         myPanel.addComponentListener(changeListener);
+    }
+
+    @SuppressWarnings("unchecked")
+    public void populatePortNames(List<String> availablePortNames) {
+        myPortNames.setModel(new DefaultComboBoxModel(ArrayUtil.toObjectArray(availablePortNames)));
     }
 
     public String getSelectedPortName() {

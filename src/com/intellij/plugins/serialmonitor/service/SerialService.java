@@ -22,5 +22,9 @@ public interface SerialService extends Disposable {
 
     void addDataListener(Consumer<String> listener);
 
+    void removeDataListener(Consumer<String> listener);
+
     void addPortStateListener(Consumer<Boolean> listener);
+
+    void removePortStateListener(Consumer<Boolean> listener);
 }

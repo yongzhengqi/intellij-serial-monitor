@@ -20,7 +20,6 @@ import static com.intellij.plugins.serialmonitor.ui.SerialMonitorBundle.message;
  */
 public class ConnectDisconnectAction extends ToggleAction implements DumbAware {
 
-    private final SerialService mySerialService = ServiceManager.getService(SerialService.class);
     private final NotificationsService myNotificationsService = ServiceManager.getService(NotificationsService.class);
 
     public ConnectDisconnectAction() {
@@ -29,23 +28,25 @@ public class ConnectDisconnectAction extends ToggleAction implements DumbAware {
 
     @Override
     public boolean isSelected(AnActionEvent e) {
-        return mySerialService.isConnected();
+        SerialService serialService = ServiceManager.getService(e.getProject(), SerialService.class);
+        return serialService.isConnected();
     }
 
     @Override
     public void setSelected(AnActionEvent e, boolean doConnect) {
         Project project = e.getProject();
-        SerialMonitorSettings mySettings = ServiceManager.getService(project, SerialMonitorSettings.class);
+        SerialService serialService = ServiceManager.getService(project, SerialService.class);
+        SerialMonitorSettings settings = ServiceManager.getService(project, SerialMonitorSettings.class);
 
         try {
             if (doConnect) {
-                if (mySettings.isValid()) {
+                if (settings.isValid()) {
                     // try connect only when settings are known to be valid
-                    mySerialService.connect(mySettings.getPortName(), mySettings.getBaudRate());
+                    serialService.connect(settings.getPortName(), settings.getBaudRate());
                 }
             } else {
                 // perform disconnect
-                mySerialService.close();
+                serialService.close();
             }
         } catch (SerialMonitorException sme) {
             myNotificationsService.createErrorNotification(sme.getMessage()).notify(project);
@@ -56,10 +57,12 @@ public class ConnectDisconnectAction extends ToggleAction implements DumbAware {
     public void update(@NotNull AnActionEvent e) {
         super.update(e);
 
-        SerialMonitorSettings settings = ServiceManager.getService(e.getProject(), SerialMonitorSettings.class);
+        Project project = e.getProject();
+        SerialService serialService = ServiceManager.getService(project, SerialService.class);
+        SerialMonitorSettings settings = ServiceManager.getService(project, SerialMonitorSettings.class);
         Presentation presentation = e.getPresentation();
 
-        if (mySerialService.isConnected()) {
+        if (serialService.isConnected()) {
             // validate disconnect action
             presentation.setIcon(SerialMonitorIcons.Disconnect);
             presentation.setText(message("disconnect.title"));
