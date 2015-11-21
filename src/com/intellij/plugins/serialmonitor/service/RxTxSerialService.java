@@ -95,14 +95,14 @@ class RxTxSerialService implements SerialService {
     @Override
     public void close() {
         if (port != null) {
+            port.removeEventListener();
             port.close();
             port = null;
             notifyStateListeners(false);
         }
     }
 
-    @Override
-    public String read() {
+    private String read() {
         try {
             return new String(read(port.getInputStream()));
         } catch (IOException e) {
@@ -155,6 +155,8 @@ class RxTxSerialService implements SerialService {
 
     @Override
     public void dispose() {
+        dataListeners.clear();
+        portStateListeners.clear();
         close();
     }
 }

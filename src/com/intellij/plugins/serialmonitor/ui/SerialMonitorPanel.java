@@ -10,6 +10,7 @@ import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
+import com.intellij.plugins.serialmonitor.SerialMonitorException;
 import com.intellij.plugins.serialmonitor.service.SerialMonitorSettings;
 import com.intellij.plugins.serialmonitor.service.SerialService;
 import com.intellij.plugins.serialmonitor.ui.console.SerialMonitorConsoleBuilder;
@@ -27,6 +28,10 @@ import java.awt.event.ActionListener;
 public class SerialMonitorPanel implements Disposable {
 
     private final SerialService mySerialService = ServiceManager.getService(SerialService.class);
+    private final NotificationsService myNotificationsService = ServiceManager.getService(NotificationsService.class);
+
+    private final SerialMonitorSettings mySettings;
+    private final Project myProject;
 
     private JButton mySend;
     private JTextField myCommand;
@@ -36,7 +41,10 @@ public class SerialMonitorPanel implements Disposable {
     private ConsoleView myConsoleView;
 
     public SerialMonitorPanel(final Project project) {
-        initConsoleView(project);
+        myProject = project;
+        mySettings = ServiceManager.getService(myProject, SerialMonitorSettings.class);
+
+        initConsoleView();
 
         mySend.addActionListener(new ActionListener() {
             @Override
@@ -62,15 +70,20 @@ public class SerialMonitorPanel implements Disposable {
             }
         });
 
-        SerialMonitorSettings settings = ServiceManager.getService(project, SerialMonitorSettings.class);
-        myLineEndings.setSelectedIndex(settings.getLineEndingsIndex());
-
+        myLineEndings.setSelectedIndex(mySettings.getLineEndingsIndex());
         // register listener to update settings, if user preferences were changed
-        myLineEndings.addActionListener(new MyPreferencesChangeListener(settings));
+        myLineEndings.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (myLineEndings.getSelectedIndex() != mySettings.getLineEndingsIndex()) {
+                    mySettings.setLineEndingIndex(myLineEndings.getSelectedIndex());
+                }
+            }
+        });
     }
 
-    private void initConsoleView(Project project) {
-        SerialMonitorConsoleBuilder consoleBuilder = SerialMonitorConsoleBuilderFactory.getInstance().createBuilder(project);
+    private void initConsoleView() {
+        SerialMonitorConsoleBuilder consoleBuilder = SerialMonitorConsoleBuilderFactory.getInstance().createBuilder(myProject);
         consoleBuilder.setViewer(true);
         myConsoleView = consoleBuilder.getConsole();
         JComponent consoleComponent = myConsoleView.getComponent(); // if I don't call this, I get NPE later on
@@ -96,7 +109,11 @@ public class SerialMonitorPanel implements Disposable {
                 s += "\r\n";
                 break;
         }
-        mySerialService.write(s.getBytes());
+        try {
+            mySerialService.write(s.getBytes());
+        } catch (SerialMonitorException sme) {
+            myNotificationsService.createErrorNotification(sme.getMessage()).notify(myProject);
+        }
     }
 
     public JComponent getComponent() {
@@ -108,26 +125,6 @@ public class SerialMonitorPanel implements Disposable {
         if (myConsoleView != null) {
             Disposer.dispose(myConsoleView);
             myConsoleView = null;
-        }
-    }
-
-    private class MyPreferencesChangeListener implements ActionListener {
-        private final SerialMonitorSettings mySettings;
-
-        public MyPreferencesChangeListener(SerialMonitorSettings settings) {
-            this.mySettings = settings;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Object source = e.getSource();
-
-            if (source == myLineEndings && myLineEndings.getSelectedIndex() != mySettings.getLineEndingsIndex()) {
-                // line endings option changed
-                mySettings.setLineEndingIndex(myLineEndings.getSelectedIndex());
-            } else {
-                throw new IllegalArgumentException();
-            }
         }
     }
 }

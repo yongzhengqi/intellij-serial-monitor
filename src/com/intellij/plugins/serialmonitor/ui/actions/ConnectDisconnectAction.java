@@ -5,8 +5,11 @@ import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.actionSystem.ToggleAction;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.DumbAware;
+import com.intellij.openapi.project.Project;
+import com.intellij.plugins.serialmonitor.SerialMonitorException;
 import com.intellij.plugins.serialmonitor.service.SerialMonitorSettings;
 import com.intellij.plugins.serialmonitor.service.SerialService;
+import com.intellij.plugins.serialmonitor.ui.NotificationsService;
 import icons.SerialMonitorIcons;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,6 +21,7 @@ import static com.intellij.plugins.serialmonitor.ui.SerialMonitorBundle.message;
 public class ConnectDisconnectAction extends ToggleAction implements DumbAware {
 
     private final SerialService mySerialService = ServiceManager.getService(SerialService.class);
+    private final NotificationsService myNotificationsService = ServiceManager.getService(NotificationsService.class);
 
     public ConnectDisconnectAction() {
         super(message("connect.title"), message("connect.tooltip"), SerialMonitorIcons.Connect);
@@ -30,16 +34,21 @@ public class ConnectDisconnectAction extends ToggleAction implements DumbAware {
 
     @Override
     public void setSelected(AnActionEvent e, boolean doConnect) {
-        SerialMonitorSettings mySettings = ServiceManager.getService(e.getProject(), SerialMonitorSettings.class);
+        Project project = e.getProject();
+        SerialMonitorSettings mySettings = ServiceManager.getService(project, SerialMonitorSettings.class);
 
-        if (doConnect) {
-            if (mySettings.isValid()) {
-                // try connect only when settings are known to be valid
-                mySerialService.connect(mySettings.getPortName(), mySettings.getBaudRate());
+        try {
+            if (doConnect) {
+                if (mySettings.isValid()) {
+                    // try connect only when settings are known to be valid
+                    mySerialService.connect(mySettings.getPortName(), mySettings.getBaudRate());
+                }
+            } else {
+                // perform disconnect
+                mySerialService.close();
             }
-        } else {
-            // perform disconnect
-            mySerialService.close();
+        } catch (SerialMonitorException sme) {
+            myNotificationsService.createErrorNotification(sme.getMessage()).notify(project);
         }
     }
 

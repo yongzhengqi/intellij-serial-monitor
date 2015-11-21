@@ -44,13 +44,14 @@ class JsscSerialService implements SerialService {
             port.addEventListener(new MySerialPortEventListener());
         } catch (SerialPortException e) {
             if (e.getPortName().startsWith("/dev") && SerialPortException.TYPE_PERMISSION_DENIED.equals(e.getExceptionType())) {
-                throw new SerialMonitorException(String.format("Error opening serial port ''%s''. Try consulting the documentation at http://playground.arduino.cc/Linux/All#Permission", portName));
+                throw new SerialMonitorException(String.format("Error opening serial port \"%s\".", portName));
             }
-            throw new SerialMonitorException(String.format("Error opening serial port ''%s''.", portName), e);
+            port = null;
+            throw new SerialMonitorException(String.format("Error opening serial port \"%s\".", portName), e);
         }
 
         if (port == null) {
-            throw new SerialMonitorException(String.format("Serial port ''%s'' not found. Did you select the right one from the Tools > Serial Port menu?", portName));
+            throw new SerialMonitorException(String.format("Serial port \"%s\" not found.", portName));
         }
         notifyStateListeners(true); // notify successful connect
     }
@@ -69,20 +70,6 @@ class JsscSerialService implements SerialService {
                 port = null;
                 notifyStateListeners(false); // notify disconnect
             }
-        }
-    }
-
-    @Override
-    public String read() {
-        try {
-            byte[] buf = port.readBytes();
-            if (buf != null && buf.length > 0) {
-                return new String(buf);
-            } else {
-                return "";
-            }
-        } catch (SerialPortException e) {
-            throw new SerialMonitorException(e.getMessage(), e);
         }
     }
 

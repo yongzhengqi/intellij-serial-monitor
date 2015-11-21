@@ -18,8 +18,6 @@ public interface SerialService extends Disposable {
 
     void close();
 
-    String read();
-
     void write(byte[] bytes);
 
     void addDataListener(Consumer<String> listener);
