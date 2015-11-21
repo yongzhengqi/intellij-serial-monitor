@@ -134,7 +134,8 @@ class JsscSerialService implements SerialService {
                 try {
                     byte[] buf = port.readBytes(serialEvent.getEventValue());
                     if (buf.length > 0) {
-                        String msg = new String(buf);
+                        // quick and dirty fix for https://bitbucket.org/dmitry_cherkas/intellij-serial-monitor/issues/1
+                        String msg = new String(buf).replaceAll("\r", "");
                         for (Consumer<String> dataListener : dataListeners) {
                             dataListener.consume(msg);
                         }

@@ -49,11 +49,7 @@ public class SerialMonitorPanel implements Disposable {
         mySerialService.addDataListener(new Consumer<String>() {
             @Override
             public void consume(final String s) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        myConsoleView.print(s, ConsoleViewContentType.NORMAL_OUTPUT);
-                    }
-                });
+                myConsoleView.print(s, ConsoleViewContentType.NORMAL_OUTPUT);
             }
         });
 

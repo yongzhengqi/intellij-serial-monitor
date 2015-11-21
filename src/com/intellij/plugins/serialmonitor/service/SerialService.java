@@ -9,6 +9,7 @@ import java.util.List;
  * @author Dmitry_Cherkas
  */
 public interface SerialService extends Disposable {
+
     List<String> getPortNames();
 
     boolean isConnected();
