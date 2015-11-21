@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>SerialPortMonitor</id>
     <name>Serial Port Monitor</name>
-    <version>0.3</version>
+    <version>0.4</version>
     <vendor email="cherkas.da@gmail.com" url="https://bitbucket.org/dmitry_cherkas/intellij-serial-monitor">
         Dmitry Cherkas
     </vendor>
@@ -23,6 +23,13 @@
     ]]></description>
 
     <change-notes><![CDATA[
+      <p>0.4
+          <ul>
+              <li>added history support for sent commands + keyboard shortcut to send on Ctrl+Enter</li>
+              <li>implemented exception handling via notification popups</li>
+              <li>fixed https://bitbucket.org/dmitry_cherkas/intellij-serial-monitor/issues/1</li>
+          </ul>
+      </p>
       <p>0.3
           <ul>
               <li>implemented duplex console to switch between HEX/regular views</li>

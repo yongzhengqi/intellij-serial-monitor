@@ -19,6 +19,10 @@ This plugin aims to leverage Arduino development with CLion by providing Serial 
 ![SerialMonitorWidget.PNG](https://bitbucket.org/repo/GdXK46/images/1180778625-SerialMonitorWidget.PNG)
 
 ## Change Notes ##
+- **0.4**
+    - added history support for sent commands + keyboard shortcut to send on Ctrl+Enter
+    - implemented exception handling via notification popups
+    - fixed https://bitbucket.org/dmitry_cherkas/intellij-serial-monitor/issues/1
 - **0.3**
     - implemented duplex console to switch between HEX/regular views
     - changed behaviour of status widget
