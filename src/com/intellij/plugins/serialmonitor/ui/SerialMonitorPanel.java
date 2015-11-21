@@ -29,7 +29,7 @@ import java.awt.event.KeyEvent;
  */
 public class SerialMonitorPanel implements Disposable {
 
-    private final NotificationsService myNotificationsService = ServiceManager.getService(NotificationsService.class);
+    private final NotificationsService myNotificationsService = NotificationsService.getInstance();
 
     private final SerialService mySerialService;
     private final SerialMonitorSettings mySettings;

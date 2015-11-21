@@ -20,7 +20,7 @@ import static com.intellij.plugins.serialmonitor.ui.SerialMonitorBundle.message;
  */
 public class ConnectDisconnectAction extends ToggleAction implements DumbAware {
 
-    private final NotificationsService myNotificationsService = ServiceManager.getService(NotificationsService.class);
+    private final NotificationsService myNotificationsService = NotificationsService.getInstance();
 
     public ConnectDisconnectAction() {
         super(message("connect.title"), message("connect.tooltip"), SerialMonitorIcons.Connect);
