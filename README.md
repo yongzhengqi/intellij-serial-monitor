@@ -19,6 +19,10 @@ This plugin aims to leverage Arduino development with CLion by providing Serial 
 ![SerialMonitorWidget.PNG](https://bitbucket.org/repo/GdXK46/images/1180778625-SerialMonitorWidget.PNG)
 
 ## Change Notes ##
+- **0.4.1**
+    - added plugin logo
+    - SerialService converted to projectComponent in order to allow simultaneous usage in multiple open projects
+    - fixed NPE when trying to dispose non-initialized SerialMonitorView
 - **0.4**
     - added history support for sent commands + keyboard shortcut to send on Ctrl+Enter
     - implemented exception handling via notification popups
