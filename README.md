@@ -38,3 +38,11 @@ This plugin aims to leverage Arduino development with CLion by providing Serial 
     - switched to purejavacomm SerialService implementation
 - **0.1**
     - Initial version
+
+## Troubleshooting ##
+
+On Linux you may not see you port in available ports dropdown due to lack or permissions.
+
+- To check, that serial port is really there use ```dmesg | grep tty```
+- To set read and write permission to port, use ```sudo chmod a+rw <your_port_name>```, where **your_port_name** should
+be something similar to _/dev/ttyACM0_, use the output of the above command to check the exact name.
