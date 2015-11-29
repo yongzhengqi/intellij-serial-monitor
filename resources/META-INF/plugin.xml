@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>SerialPortMonitor</id>
     <name>Serial Port Monitor</name>
-    <version>0.4.1</version>
+    <version>0.4.5</version>
     <vendor email="cherkas.da@gmail.com" url="https://bitbucket.org/dmitry_cherkas/intellij-serial-monitor" logo="/icons/OpenSerial_32x32.png">
         Dmitry Cherkas
     </vendor>
@@ -22,45 +22,7 @@
       virtual COM port please make sure to install all necessary drivers.
     ]]></description>
 
-    <change-notes><![CDATA[
-      <p>0.4.1
-          <ul>
-              <li>added plugin logo</li>
-              <li>SerialService converted to projectComponent in order to allow simultaneous usage in multiple open projects</li>
-              <li>fixed NPE when trying to dispose non-initialized SerialMonitorView</li>
-          </ul>
-      </p>
-      <p>0.4
-          <ul>
-              <li>added history support for sent commands + keyboard shortcut to send on Ctrl+Enter</li>
-              <li>implemented exception handling via notification popups</li>
-              <li>fixed https://bitbucket.org/dmitry_cherkas/intellij-serial-monitor/issues/1</li>
-          </ul>
-      </p>
-      <p>0.3
-          <ul>
-              <li>implemented duplex console to switch between HEX/regular views</li>
-              <li>changed behaviour of status widget</li>
-          </ul>
-      </p>
-      <p>0.2
-          <ul>
-              <li>implemented serial monitor status bar</li>
-              <li>added README</li>
-          </ul>
-      </p>
-      <p>0.1.1
-          <ul>
-              <li>fixed "EditorImpl hasn't been released" exception on idea shutdown</li>
-              <li>switched to purejavacomm SerialService implementation</li>
-          </ul>
-      </p>
-      <p>0.1
-          <ul>
-              <li>Initial version</li>
-          </ul>
-      </p>
-    ]]>
+    <change-notes><![CDATA[See plugin <a href="https://bitbucket.org/dmitry_cherkas/intellij-serial-monitor">home page</a> for change notes]]>
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->

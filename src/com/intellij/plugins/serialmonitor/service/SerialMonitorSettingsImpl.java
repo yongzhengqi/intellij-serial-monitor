@@ -37,7 +37,7 @@ class SerialMonitorSettingsImpl implements PersistentStateComponent<Element>, Se
     private final Supplier<List<String>> portNamesSupplier;
 
     private String myPortName;
-    private int myBaudRate;
+    private int myBaudRate = Integer.valueOf(DEFAULT_BAUD_RATE);
     private int myLineEndingsIndex;
 
     public SerialMonitorSettingsImpl(Project project) {

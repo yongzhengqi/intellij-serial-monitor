@@ -1,18 +1,23 @@
 package com.intellij.plugins.serialmonitor.ui;
 
+import static com.intellij.plugins.serialmonitor.ui.SerialMonitorBundle.message;
+
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.plugins.serialmonitor.service.SerialMonitorSettings;
-import com.intellij.plugins.serialmonitor.service.SerialService;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.*;
-import java.awt.event.*;
-
-import static com.intellij.plugins.serialmonitor.ui.SerialMonitorBundle.message;
 
 public class SerialMonitorSettingsDialog extends JDialog {
 
     private final SerialMonitorSettings mySettings;
+    private final Project myProject;
 
     private JPanel contentPane;
     private JButton buttonOK;
@@ -20,8 +25,8 @@ public class SerialMonitorSettingsDialog extends JDialog {
     private SerialMonitorSettingsPanel mySettingsPanel;
 
     public SerialMonitorSettingsDialog(Project project) {
+        myProject = project;
         mySettings = ServiceManager.getService(project, SerialMonitorSettings.class);
-        mySettingsPanel.populatePortNames(ServiceManager.getService(project, SerialService.class).getPortNames());
 
         setContentPane(contentPane);
         setModal(true);
@@ -67,13 +72,24 @@ public class SerialMonitorSettingsDialog extends JDialog {
     }
 
     private void onOK() {
-        mySettings.setPortName(mySettingsPanel.getSelectedPortName());
-        mySettings.setBaudRate(mySettingsPanel.getSelectedBaudRate());
+        String selectedPortName = mySettingsPanel.getSelectedPortName();
+        int selectedBaudRate = mySettingsPanel.getSelectedBaudRate();
+
+        if (selectedPortName != null) {
+            mySettings.setPortName(selectedPortName);
+        }
+        if (selectedBaudRate > 0) {
+            mySettings.setBaudRate(selectedBaudRate);
+        }
         dispose();
     }
 
     private void onCancel() {
         // add your code here if necessary
         dispose();
+    }
+
+    private void createUIComponents() {
+        mySettingsPanel = new SerialMonitorSettingsPanel(myProject);
     }
 }

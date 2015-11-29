@@ -1,22 +1,33 @@
 package com.intellij.plugins.serialmonitor.ui;
 
+import static com.intellij.plugins.serialmonitor.ui.SerialMonitorBundle.message;
+
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ui.util.SimpleTextCellAppearance;
+import com.intellij.plugins.serialmonitor.service.SerialMonitorSettings;
 import com.intellij.plugins.serialmonitor.service.SerialService;
+import com.intellij.ui.ColoredListCellRendererWrapper;
 import com.intellij.util.ArrayUtil;
-import org.apache.commons.lang.StringUtils;
 
-import javax.swing.*;
+import org.apache.commons.lang.StringUtils;
+import org.jetbrains.annotations.NotNull;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
+import javax.swing.*;
 
 /**
  * @author Dmitry_Cherkas
  */
+@SuppressWarnings("unchecked")
 public class SerialMonitorSettingsPanel {
 
     private JComboBox myPortNames;
@@ -26,13 +37,7 @@ public class SerialMonitorSettingsPanel {
     private JLabel myWarningLabel;
     private JSeparator mySeparator;
 
-    @SuppressWarnings("unchecked")
     public SerialMonitorSettingsPanel(Project project) {
-        this();
-        populatePortNames(ServiceManager.getService(project, SerialService.class).getPortNames());
-    }
-
-    public SerialMonitorSettingsPanel() {
         // configure Settings Validation
         myWarningLabel.setIcon(AllIcons.RunConfigurations.ConfigurationWarning);
         MySettingsPanelChangeListener changeListener = new MySettingsPanelChangeListener();
@@ -40,11 +45,24 @@ public class SerialMonitorSettingsPanel {
         myPortNames.addActionListener(changeListener);
         myBaudRates.addActionListener(changeListener);
         myPanel.addComponentListener(changeListener);
-    }
 
-    @SuppressWarnings("unchecked")
-    public void populatePortNames(List<String> availablePortNames) {
-        myPortNames.setModel(new DefaultComboBoxModel(ArrayUtil.toObjectArray(availablePortNames)));
+        myPortNames.setRenderer(new ColoredListCellRendererWrapper<Port>() {
+
+            @Override
+            protected void doCustomize(JList list, Port value, int index, boolean selected, boolean hasFocus) {
+                if (value == null) {
+                    SimpleTextCellAppearance.invalid(message("port-not-selected.text"), null).customize(this);
+                } else if (value.isAvailable()) {
+                    SimpleTextCellAppearance.regular(value.getName(), null).customize(this);
+                } else {
+                    SimpleTextCellAppearance.invalid(value.getName(), null).customize(this);
+                }
+            }
+        });
+
+        myPortNames.setModel(new DefaultComboBoxModel(ArrayUtil.toObjectArray(getPorts(project))));
+        myPortNames.setSelectedIndex(-1);
+        myBaudRates.setSelectedIndex(-1);
     }
 
     public String getSelectedPortName() {
@@ -53,12 +71,13 @@ public class SerialMonitorSettingsPanel {
     }
 
     public int getSelectedBaudRate() {
-        return Integer.parseInt((String) myBaudRates.getSelectedItem());
+        Object selectedItem = myBaudRates.getSelectedItem();
+        return selectedItem == null ? 0 : Integer.parseInt((String) selectedItem);
     }
 
     public void setSelectedPortName(String portName) {
         if (StringUtils.isNotEmpty(portName)) {
-            myPortNames.setSelectedItem(portName);
+            myPortNames.setSelectedItem(findPort(portName));
         }
     }
 
@@ -68,11 +87,43 @@ public class SerialMonitorSettingsPanel {
         }
     }
 
+    private Port findPort(String portName) {
+        ComboBoxModel model = myPortNames.getModel();
+        for (int i = 0; i < model.getSize(); i++) {
+            Port port = (Port) model.getElementAt(i);
+            if (portName.equals(port.getName())) {
+                return port;
+            }
+        }
+        return null;
+    }
+
+    private Set<Port> getPorts(Project project) {
+        List<String> availablePortNames = ServiceManager.getService(project, SerialService.class).getPortNames();
+        String selectedPortName = ServiceManager.getService(project, SerialMonitorSettings.class).getPortName();
+
+        Set<Port> ports = new TreeSet<>();
+        for (String portName : availablePortNames) {
+            ports.add(new Port(portName, true));
+        }
+
+        if (selectedPortName != null && !availablePortNames.contains(selectedPortName)) {
+            ports.add(new Port(selectedPortName, false));
+        }
+        return ports;
+    }
+
     private void validateSettings() {
         if (myPortNames.getModel().getSize() == 0) {
             throw SerialMonitorSettingsValidationException.error("no-ports-error");
         }
-        // TODO add more validation (e.g. that selected port does not exist, or baud rate not specified)
+
+        Port selectedPort = (Port) myPortNames.getSelectedItem();
+        if (selectedPort == null) {
+            throw SerialMonitorSettingsValidationException.error("select-port-error");
+        } else if (!selectedPort.isAvailable()) {
+            throw SerialMonitorSettingsValidationException.error("port-unavailable-error");
+        }
     }
 
     public JComponent getComponent() {
@@ -123,7 +174,57 @@ public class SerialMonitorSettingsPanel {
         }
 
         private String generateWarningLabelText(final SerialMonitorSettingsValidationException settingsValidationException) {
-            return "<html><body><b>" + settingsValidationException.getTitle() + ": </b>" + settingsValidationException.getMessage() + "</body></html>";
+            return "<html><body><b>" + settingsValidationException.getTitle() + ": </b>" + settingsValidationException.getMessage()
+                   + "</body></html>";
+        }
+    }
+
+    private static class Port implements Comparable<Port> {
+
+        private String name;
+        private boolean available;
+
+        public Port(String name, boolean available) {
+            this.name = name;
+            this.available = available;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public boolean isAvailable() {
+            return available;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+
+            Port port = (Port) o;
+
+            return name.equals(port.name);
+
+        }
+
+        @Override
+        public int hashCode() {
+            return name.hashCode();
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+
+        @Override
+        public int compareTo(@NotNull Port p) {
+            return name.compareTo(p.name);
         }
     }
 }

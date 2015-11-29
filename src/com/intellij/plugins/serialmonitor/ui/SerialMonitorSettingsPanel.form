@@ -13,6 +13,7 @@
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <labelFor value="7748f"/>
           <text resource-bundle="SerialMonitorBundle" key="port.title"/>
         </properties>
       </component>
@@ -21,6 +22,7 @@
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <labelFor value="c28da"/>
           <text resource-bundle="SerialMonitorBundle" key="baudrate.title"/>
         </properties>
       </component>
@@ -29,7 +31,7 @@
           <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <toolTipText resource-bundle="SerialMonitorBundle" key="port.tooltip"/>
+          <toolTipText value=""/>
         </properties>
       </component>
       <component id="c28da" class="javax.swing.JComboBox" binding="myBaudRates">
@@ -49,7 +51,7 @@
             <item value="74880"/>
             <item value="115200"/>
           </model>
-          <toolTipText resource-bundle="SerialMonitorBundle" key="baudrate.tooltip"/>
+          <toolTipText value=""/>
         </properties>
       </component>
       <grid id="32aa2" binding="myValidationPanel" layout-manager="GridLayoutManager" row-count="2" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
