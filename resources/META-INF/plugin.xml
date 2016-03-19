@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>SerialPortMonitor</id>
     <name>Serial Port Monitor</name>
-    <version>0.4.5</version>
+    <version>0.4.6</version>
     <vendor email="cherkas.da@gmail.com" url="https://bitbucket.org/dmitry_cherkas/intellij-serial-monitor" logo="/icons/OpenSerial_32x32.png">
         Dmitry Cherkas
     </vendor>
@@ -26,7 +26,7 @@
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="141.0"/>
+    <idea-version since-build="141.245"/>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html on how to target different products -->
     <depends>com.intellij.modules.lang</depends>

@@ -1,5 +1,7 @@
 package com.intellij.plugins.serialmonitor.ui.actions;
 
+import static com.intellij.plugins.serialmonitor.ui.SerialMonitorBundle.message;
+
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.actionSystem.ToggleAction;
@@ -10,10 +12,10 @@ import com.intellij.plugins.serialmonitor.SerialMonitorException;
 import com.intellij.plugins.serialmonitor.service.SerialMonitorSettings;
 import com.intellij.plugins.serialmonitor.service.SerialService;
 import com.intellij.plugins.serialmonitor.ui.NotificationsService;
-import icons.SerialMonitorIcons;
+
 import org.jetbrains.annotations.NotNull;
 
-import static com.intellij.plugins.serialmonitor.ui.SerialMonitorBundle.message;
+import icons.SerialMonitorIcons;
 
 /**
  * @author Dmitry_Cherkas
@@ -28,8 +30,12 @@ public class ConnectDisconnectAction extends ToggleAction implements DumbAware {
 
     @Override
     public boolean isSelected(AnActionEvent e) {
-        SerialService serialService = ServiceManager.getService(e.getProject(), SerialService.class);
-        return serialService.isConnected();
+        if (e.getProject() != null) {
+            SerialService serialService = ServiceManager.getService(e.getProject(), SerialService.class);
+            return serialService.isConnected();
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -58,10 +64,16 @@ public class ConnectDisconnectAction extends ToggleAction implements DumbAware {
         super.update(e);
 
         Project project = e.getProject();
+        Presentation presentation = e.getPresentation();
+        if (project == null) {
+            presentation.setEnabled(false);
+            return;
+        }
+
+        presentation.setEnabled(true);
+
         SerialService serialService = ServiceManager.getService(project, SerialService.class);
         SerialMonitorSettings settings = ServiceManager.getService(project, SerialMonitorSettings.class);
-        Presentation presentation = e.getPresentation();
-
         if (serialService.isConnected()) {
             // validate disconnect action
             presentation.setIcon(SerialMonitorIcons.Disconnect);

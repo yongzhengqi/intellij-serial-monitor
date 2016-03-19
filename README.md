@@ -19,6 +19,8 @@ This plugin aims to leverage Arduino development with CLion by providing Serial 
 ![SerialMonitorWidget.PNG](https://bitbucket.org/repo/GdXK46/images/1180778625-SerialMonitorWidget.PNG)
 
 ## Change Notes ##
+- **0.4.6**
+    - fixed https://bitbucket.org/dmitry_cherkas/intellij-serial-monitor/issues/3/plugin-error-in-android-studio
 - **0.4.5**
     - improved port name validation in settings dropdown
     - added Troubleshooting section to README
