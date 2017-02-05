@@ -3,13 +3,16 @@ package com.intellij.plugins.serialmonitor.service;
 import com.intellij.plugins.serialmonitor.SerialMonitorException;
 import com.intellij.util.Consumer;
 import com.intellij.util.containers.HashSet;
-import jssc.*;
+
+import jssc.SerialPort;
+import jssc.SerialPortEvent;
+import jssc.SerialPortEventListener;
+import jssc.SerialPortException;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 /**
  * @author Dmitry_Cherkas
@@ -22,13 +25,7 @@ class JsscSerialService implements SerialService {
 
     @Override
     public List<String> getPortNames() {
-        String[] portNames;
-        if(SerialNativeInterface.getOsType() == SerialNativeInterface.OS_MAC_OS_X) {
-            portNames = SerialPortList.getPortNames(Pattern.compile("(tty.(serial|usbserial|usbmodem)|cu).*"));
-        } else {
-            portNames = SerialPortList.getPortNames();
-        }
-        return Arrays.asList(portNames);
+        return Arrays.asList(SerialPortList.getPortNames());
     }
 
     public boolean isConnected() {

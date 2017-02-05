@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>SerialPortMonitor</id>
     <name>Serial Port Monitor</name>
-    <version>0.5</version>
+    <version>0.5.1</version>
     <vendor email="cherkas.da@gmail.com" url="https://bitbucket.org/dmitry_cherkas/intellij-serial-monitor" logo="/icons/OpenSerial_32x32.png">
         Dmitry Cherkas
     </vendor>
