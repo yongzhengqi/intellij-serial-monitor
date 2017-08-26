@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/intellij-serial-monitor.iml" filepath="$PROJECT_DIR$/intellij-serial-monitor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/intellij-serial-monitor_main.iml" filepath="$PROJECT_DIR$/.idea/modules/intellij-serial-monitor_main.iml" group="intellij-serial-monitor" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/intellij-serial-monitor_test.iml" filepath="$PROJECT_DIR$/.idea/modules/intellij-serial-monitor_test.iml" group="intellij-serial-monitor" />
     </modules>
   </component>
 </project>
