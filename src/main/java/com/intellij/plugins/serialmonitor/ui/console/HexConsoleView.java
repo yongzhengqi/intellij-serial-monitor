@@ -25,7 +25,8 @@ public class HexConsoleView extends ConsoleViewImpl {
     public void print(@NotNull String s, @NotNull ConsoleViewContentType contentType) {
         StringBuilder buffer = new StringBuilder();
 
-        for (char c : s.toCharArray()) {
+        for (byte b : s.getBytes()) {
+            char c = (char) (b & 0xff);
             buffer.append(hexChar[c >> 4])
                     .append(hexChar[c & 0xf])
                     .append(' ');
