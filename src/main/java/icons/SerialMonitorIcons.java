@@ -14,8 +14,7 @@ public class SerialMonitorIcons {
         return IconLoader.getIcon(path, SerialMonitorIcons.class);
     }
 
-    public static final Icon OpenSerial = load("/icons/OpenSerial.png"); // 16x16
-    public static final Icon OpenSerial_13x13 = load("/icons/OpenSerial_13x13.png"); // 16x16
+    public static final Icon OpenSerial_13x13 = load("/icons/OpenSerial_16x16.png"); // 16x16
 
     public static final Icon Connect = load("/icons/Connect_16x16.png"); // 16x16
     public static final Icon Disconnect = load("/icons/Disconnect_16x16.png"); // 16x16

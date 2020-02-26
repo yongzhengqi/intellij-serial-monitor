@@ -1,8 +1,8 @@
-<idea-plugin version="2">
+<idea-plugin url="https://bitbucket.org/dmitry_cherkas/intellij-serial-monitor">
     <id>SerialPortMonitor</id>
     <name>Serial Port Monitor</name>
     <version>@version@</version>
-    <vendor email="cherkas.da@gmail.com" url="https://bitbucket.org/dmitry_cherkas/intellij-serial-monitor" logo="/icons/OpenSerial_32x32.png">
+    <vendor email="cherkas.da@gmail.com" url="https://github.com/dmitry-cherkas">
         Dmitry Cherkas
     </vendor>
 
@@ -20,13 +20,16 @@
       <br/>
       <b>Note:</b> Only COM port (both hardware and virtual) is currently supported. In order to use
       virtual COM port please make sure to install all necessary drivers.
+      <br/><br/>
+      Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
     ]]></description>
 
-    <change-notes><![CDATA[See plugin <a href="https://bitbucket.org/dmitry_cherkas/intellij-serial-monitor">home page</a> for change notes]]>
+    <change-notes>
+        <![CDATA[See plugin <a href="https://bitbucket.org/dmitry_cherkas/intellij-serial-monitor">home page</a> for change notes]]>
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="193"/>
+    <idea-version since-build="201"/>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html on how to target different products -->
     <depends>com.intellij.modules.lang</depends>
@@ -36,8 +39,8 @@
                     factoryClass="com.intellij.plugins.serialmonitor.SerialMonitorToolWindowFactory"
                     canCloseContents="false" secondary="false"/>
 
-        <applicationService serviceImplementation="com.intellij.plugins.serialmonitor.ui.NotificationsService"
-                            serviceInterface="com.intellij.plugins.serialmonitor.ui.NotificationsService"/>
+        <applicationService serviceImplementation="com.intellij.plugins.serialmonitor.ui.NotificationsService"/>
+        <applicationService serviceImplementation="com.intellij.plugins.serialmonitor.ui.console.SerialMonitorConsoleBuilderFactory"/>
 
         <projectService serviceInterface="com.intellij.plugins.serialmonitor.service.SerialService"
                             serviceImplementation="com.intellij.plugins.serialmonitor.service.JsscSerialService"/>
@@ -45,8 +48,6 @@
         <projectService serviceInterface="com.intellij.plugins.serialmonitor.service.SerialMonitorSettings"
                         serviceImplementation="com.intellij.plugins.serialmonitor.service.SerialMonitorSettingsImpl"/>
 
-        <applicationService serviceInterface="com.intellij.plugins.serialmonitor.ui.console.SerialMonitorConsoleBuilderFactory"
-                            serviceImplementation="com.intellij.plugins.serialmonitor.ui.console.SerialMonitorConsoleBuilderFactory"/>
 
         <projectConfigurable key="display-name" bundle="SerialMonitorBundle" groupId="tools" id="settings.serialmonitor"
                              instance="com.intellij.plugins.serialmonitor.SerialMonitorConfigurable"/>
