@@ -5,6 +5,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.CustomStatusBarWidget;
 import com.intellij.openapi.wm.StatusBar;
 import com.intellij.plugins.serialmonitor.service.SerialMonitorSettings;
+import com.intellij.plugins.serialmonitor.service.SerialMonitorSettingsChangeListener;
 import com.intellij.plugins.serialmonitor.service.SerialService;
 import com.intellij.util.Consumer;
 import org.jetbrains.annotations.NotNull;
@@ -29,24 +30,24 @@ public class SerialMonitorStatusWidget implements CustomStatusBarWidget {
         mySettings = ServiceManager.getService(project, SerialMonitorSettings.class);
         myPanel = new SerialMonitorStatusWidgetPanel();
 
-        portStateListener = new Consumer<Boolean>() {
-            @Override
-            public void consume(Boolean isConnected) {
-                String text;
-                String tooltip = null;
-                if (isConnected) {
-                    String port = mySettings.getPortName();
-                    int baud = mySettings.getBaudRate();
+        portStateListener = isConnected -> {
+            String text;
+            String tooltip = null;
+            if (isConnected) {
+                String port = mySettings.getPortName();
+                int baud = mySettings.getBaudRate();
 
-                    text = message("status.connected.text", port, baud);
-                    tooltip = message("status.connected.tooltip", port, baud);
-                } else {
-                    text = message("status.disconnected.text");
-                }
-                myPanel.setText(text, tooltip);
+                text = message("status.connected.text", port, baud);
+                tooltip = message("status.connected.tooltip", port, baud);
+            } else {
+                text = message("status.disconnected.text");
             }
+            myPanel.setText(text, tooltip);
         };
         mySerialService.addPortStateListener(portStateListener);
+
+        project.getMessageBus().connect().subscribe(SerialMonitorSettingsChangeListener.TOPIC,
+                newSettings -> this.getComponent().setVisible(newSettings.isShowStatusWidget()));
     }
 
     @Override

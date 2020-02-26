@@ -27,17 +27,17 @@ import javax.swing.*;
 /**
  * @author Dmitry_Cherkas
  */
-@SuppressWarnings("unchecked")
 public class SerialMonitorSettingsPanel {
 
-    private JComboBox myPortNames;
-    private JComboBox myBaudRates;
+    private JComboBox<Port> myPortNames;
+    private JComboBox<String> myBaudRates;
     private JPanel myPanel;
     private JPanel myValidationPanel;
     private JLabel myWarningLabel;
     private JSeparator mySeparator;
+    private JCheckBox myShowStatusWidget;
 
-    public SerialMonitorSettingsPanel(Project project) {
+    public SerialMonitorSettingsPanel(Project project, boolean showExtendedSettings) {
         // configure Settings Validation
         myWarningLabel.setIcon(AllIcons.General.BalloonError);
         MySettingsPanelChangeListener changeListener = new MySettingsPanelChangeListener();
@@ -60,9 +60,11 @@ public class SerialMonitorSettingsPanel {
             }
         });
 
-        myPortNames.setModel(new DefaultComboBoxModel(ArrayUtil.toObjectArray(getPorts(project))));
+        myPortNames.setModel(new DefaultComboBoxModel<>(getPorts(project).toArray(new Port[0])));
         myPortNames.setSelectedIndex(-1);
         myBaudRates.setSelectedIndex(-1);
+
+        myShowStatusWidget.setVisible(showExtendedSettings);
     }
 
     public String getSelectedPortName() {
@@ -88,9 +90,9 @@ public class SerialMonitorSettingsPanel {
     }
 
     private Port findPort(String portName) {
-        ComboBoxModel model = myPortNames.getModel();
+        ComboBoxModel<Port> model = myPortNames.getModel();
         for (int i = 0; i < model.getSize(); i++) {
-            Port port = (Port) model.getElementAt(i);
+            Port port = model.getElementAt(i);
             if (portName.equals(port.getName())) {
                 return port;
             }
@@ -128,6 +130,14 @@ public class SerialMonitorSettingsPanel {
 
     public JComponent getComponent() {
         return myPanel;
+    }
+
+    public boolean isShowStatusWidget() {
+        return myShowStatusWidget.isSelected();
+    }
+
+    public void setShowStatusWidget(boolean showStatusWidget) {
+        myShowStatusWidget.setSelected(showStatusWidget);
     }
 
     private class MySettingsPanelChangeListener implements ActionListener, ComponentListener {
@@ -175,7 +185,7 @@ public class SerialMonitorSettingsPanel {
 
         private String generateWarningLabelText(final SerialMonitorSettingsValidationException settingsValidationException) {
             return "<html><body><b>" + settingsValidationException.getTitle() + ": </b>" + settingsValidationException.getMessage()
-                   + "</body></html>";
+                    + "</body></html>";
         }
     }
 

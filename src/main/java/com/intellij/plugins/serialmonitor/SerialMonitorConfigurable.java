@@ -4,7 +4,6 @@ import com.google.common.base.Objects;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.options.Configurable;
-import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
@@ -60,7 +59,7 @@ public class SerialMonitorConfigurable implements SearchableConfigurable, Config
     @Override
     public JComponent createComponent() {
         if (mySettingsPanel == null) {
-            mySettingsPanel = new SerialMonitorSettingsPanel(myProject);
+            mySettingsPanel = new SerialMonitorSettingsPanel(myProject, true);
         }
         reset();
         return mySettingsPanel.getComponent();
@@ -70,14 +69,16 @@ public class SerialMonitorConfigurable implements SearchableConfigurable, Config
     public boolean isModified() {
         return mySettingsPanel == null
                 || !Objects.equal(mySettings.getPortName(), mySettingsPanel.getSelectedPortName())
-                || mySettings.getBaudRate() != mySettingsPanel.getSelectedBaudRate();
+                || mySettings.getBaudRate() != mySettingsPanel.getSelectedBaudRate()
+                || mySettings.isShowStatusWidget() != mySettingsPanel.isShowStatusWidget();
     }
 
     @Override
-    public void apply() throws ConfigurationException {
+    public void apply() {
         if (mySettingsPanel != null) {
             mySettings.setPortName(mySettingsPanel.getSelectedPortName());
             mySettings.setBaudRate(mySettingsPanel.getSelectedBaudRate());
+            mySettings.setShowStatusWidget(mySettingsPanel.isShowStatusWidget());
         }
     }
 
@@ -86,6 +87,7 @@ public class SerialMonitorConfigurable implements SearchableConfigurable, Config
         if (mySettingsPanel != null) {
             mySettingsPanel.setSelectedPortName(mySettings.getPortName());
             mySettingsPanel.setSelectedBaudRate(mySettings.getBaudRate());
+            mySettingsPanel.setShowStatusWidget(mySettings.isShowStatusWidget());
         }
     }
 

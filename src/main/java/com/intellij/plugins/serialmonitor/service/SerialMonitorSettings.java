@@ -17,4 +17,8 @@ public interface SerialMonitorSettings {
     int getLineEndingsIndex();
 
     void setLineEndingIndex(int lineEndingIndex);
+
+    boolean isShowStatusWidget();
+
+    void setShowStatusWidget(boolean showStatusWidget);
 }
