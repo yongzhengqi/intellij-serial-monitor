@@ -4,7 +4,7 @@ import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionPlaces;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
-import com.intellij.openapi.components.AbstractProjectComponent;
+import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.wm.ToolWindow;
@@ -17,12 +17,13 @@ import org.jetbrains.annotations.NotNull;
 /**
  * @author Dmitry_Cherkas
  */
-public class SerialMonitorView extends AbstractProjectComponent {
+public class SerialMonitorView implements ProjectComponent {
 
+    private final Project myProject;
     private SerialMonitorPanel mySerialMonitorPanel;
 
     protected SerialMonitorView(Project project) {
-        super(project);
+        myProject = project;
     }
 
     public static SerialMonitorView getInstance(@NotNull Project project) {

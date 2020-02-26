@@ -8,7 +8,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ui.util.SimpleTextCellAppearance;
 import com.intellij.plugins.serialmonitor.service.SerialMonitorSettings;
 import com.intellij.plugins.serialmonitor.service.SerialService;
-import com.intellij.ui.ColoredListCellRendererWrapper;
+import com.intellij.ui.ColoredListCellRenderer;
 import com.intellij.util.ArrayUtil;
 
 import org.apache.commons.lang.StringUtils;
@@ -39,17 +39,17 @@ public class SerialMonitorSettingsPanel {
 
     public SerialMonitorSettingsPanel(Project project) {
         // configure Settings Validation
-        myWarningLabel.setIcon(AllIcons.RunConfigurations.ConfigurationWarning);
+        myWarningLabel.setIcon(AllIcons.General.BalloonError);
         MySettingsPanelChangeListener changeListener = new MySettingsPanelChangeListener();
 
         myPortNames.addActionListener(changeListener);
         myBaudRates.addActionListener(changeListener);
         myPanel.addComponentListener(changeListener);
 
-        myPortNames.setRenderer(new ColoredListCellRendererWrapper<Port>() {
+        myPortNames.setRenderer(new ColoredListCellRenderer<Port>() {
 
             @Override
-            protected void doCustomize(JList list, Port value, int index, boolean selected, boolean hasFocus) {
+            protected void customizeCellRenderer(@NotNull JList<? extends Port> list, Port value, int index, boolean selected, boolean hasFocus) {
                 if (value == null) {
                     SimpleTextCellAppearance.invalid(message("port-not-selected.text"), null).customize(this);
                 } else if (value.isAvailable()) {

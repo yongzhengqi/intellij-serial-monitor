@@ -1,3 +1,5 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 buildscript {
     repositories {
         mavenCentral()
@@ -6,7 +8,7 @@ buildscript {
 }
 
 plugins {
-    id 'org.jetbrains.intellij' version '0.2.16'
+    id 'org.jetbrains.intellij' version '0.4.16'
 }
 
 apply plugin: 'java'
@@ -22,7 +24,7 @@ tasks.withType(JavaCompile) {
 task initConfig(type: Copy) {
     from('src/main/resources') {
         include '**/plugin.xml'
-        filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: [version: version])
+        filter(ReplaceTokens, tokens: [version: version])
     }
 }
 

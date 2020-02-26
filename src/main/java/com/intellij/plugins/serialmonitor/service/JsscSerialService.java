@@ -2,17 +2,13 @@ package com.intellij.plugins.serialmonitor.service;
 
 import com.intellij.plugins.serialmonitor.SerialMonitorException;
 import com.intellij.util.Consumer;
-import com.intellij.util.containers.HashSet;
 
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Dmitry_Cherkas
@@ -20,8 +16,8 @@ import java.util.Set;
 class JsscSerialService implements SerialService {
 
     private SerialPort port;
-    private final Set<Consumer<String>> dataListeners = Collections.synchronizedSet(new HashSet<Consumer<String>>());
-    private final Set<Consumer<Boolean>> portStateListeners = Collections.synchronizedSet(new HashSet<Consumer<Boolean>>());
+    private final Set<Consumer<String>> dataListeners = Collections.synchronizedSet(new HashSet<>());
+    private final Set<Consumer<Boolean>> portStateListeners = Collections.synchronizedSet(new HashSet<>());
 
     @Override
     public List<String> getPortNames() {

@@ -8,7 +8,6 @@ import com.intellij.plugins.serialmonitor.service.SerialMonitorSettings;
 import com.intellij.plugins.serialmonitor.service.SerialService;
 import com.intellij.util.Consumer;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
@@ -59,12 +58,6 @@ public class SerialMonitorStatusWidget implements CustomStatusBarWidget {
     @Override
     public String ID() {
         return "SerialMonitorStatusWidget";
-    }
-
-    @Nullable
-    @Override
-    public WidgetPresentation getPresentation(@NotNull PlatformType type) {
-        return null;
     }
 
     @Override

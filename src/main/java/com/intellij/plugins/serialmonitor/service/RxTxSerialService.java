@@ -22,8 +22,8 @@ class RxTxSerialService implements SerialService {
     private int parity = SerialPort.PARITY_NONE;
 
     private SerialPort port;
-    private final Set<Consumer<String>> dataListeners = Collections.synchronizedSet(new HashSet<Consumer<String>>());
-    private Set<Consumer<Boolean>> portStateListeners = Collections.synchronizedSet(new com.intellij.util.containers.HashSet<Consumer<Boolean>>());
+    private final Set<Consumer<String>> dataListeners = Collections.synchronizedSet(new HashSet<>());
+    private Set<Consumer<Boolean>> portStateListeners = Collections.synchronizedSet(new HashSet<>());
 
     @Override
     public List<String> getPortNames() {
