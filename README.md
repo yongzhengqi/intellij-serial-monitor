@@ -19,6 +19,11 @@ This plugin aims to leverage Arduino development with CLion by providing Serial 
 ![SerialMonitorWidget.PNG](https://bitbucket.org/repo/GdXK46/images/1180778625-SerialMonitorWidget.PNG)
 
 ## Change Notes ##
+- **0.5.5**
+    - update icons: Icons made by [Smashicons](https://www.flaticon.com/authors/smashicons) from [www.flaticon.com](https://www.flaticon.com/)
+    - upgrade jssc lib to resolve issue with win10 crash on jdk11
+    - add configuration option to allow hiding status widget [#21](https://bitbucket.org/dmitry_cherkas/intellij-serial-monitor/issues/21/allow-disabling-of-status-bar-widget)
+remove deprecated apis usage as of 2020.1 EAP Dmitry Cherkas 26.02.2020 18:02
 - **0.5.4**
     - fix for [#24](https://bitbucket.org/dmitry_cherkas/intellij-serial-monitor/issues/24/not-working-in-clion-20201-eap)
     - fix incorrect settings path (use relative path instead of absolute)
