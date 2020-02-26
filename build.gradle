@@ -48,8 +48,7 @@ intellij {
 
     // SET YOUR JETBRAINS LOGIN DETAILS AS ENVIRONMENT VARIABLES SO THAT YOU CAN PUBLISH A NEW BUILD TO THE REPOSITORY
     publishPlugin {
-        username System.getenv('JETBRAINS_USERNAME')
-        password System.getenv('JETBRAINS_PASSWORD')
+        token System.getenv('MARKETPLACE_TOKEN')
     }
 }
 
