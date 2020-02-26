@@ -1,6 +1,6 @@
 package com.intellij.plugins.serialmonitor.ui;
 
-import com.intellij.CommonBundle;
+import com.intellij.AbstractBundle;
 import com.intellij.reference.SoftReference;
 
 import java.lang.ref.Reference;
@@ -15,7 +15,7 @@ public class SerialMonitorBundle {
     private static final String BUNDLE = SerialMonitorBundle.class.getSimpleName();
 
     public static String message(String key, Object... params) {
-        return CommonBundle.message(getBundle(), key, params);
+        return AbstractBundle.message(getBundle(), key, params);
     }
 
     private static ResourceBundle getBundle() {

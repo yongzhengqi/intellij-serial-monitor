@@ -53,11 +53,4 @@
 
         <statusBarWidgetProvider implementation="com.intellij.plugins.serialmonitor.ui.status.SerialMonitorStatusBarWidgetProvider"/>
     </extensions>
-
-    <project-components>
-        <component>
-            <interface-class>com.intellij.plugins.serialmonitor.ui.SerialMonitorView</interface-class>
-            <implementation-class>com.intellij.plugins.serialmonitor.ui.SerialMonitorView</implementation-class>
-        </component>
-    </project-components>
 </idea-plugin>
