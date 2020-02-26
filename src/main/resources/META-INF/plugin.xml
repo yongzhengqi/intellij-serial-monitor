@@ -26,7 +26,7 @@
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="141.245"/>
+    <idea-version since-build="193"/>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html on how to target different products -->
     <depends>com.intellij.modules.lang</depends>
@@ -50,17 +50,14 @@
 
         <projectConfigurable key="display-name" bundle="SerialMonitorBundle" groupId="tools" id="settings.serialmonitor"
                              instance="com.intellij.plugins.serialmonitor.SerialMonitorConfigurable"/>
+
+        <statusBarWidgetProvider implementation="com.intellij.plugins.serialmonitor.ui.status.SerialMonitorStatusBarWidgetProvider"/>
     </extensions>
 
     <project-components>
         <component>
             <interface-class>com.intellij.plugins.serialmonitor.ui.SerialMonitorView</interface-class>
             <implementation-class>com.intellij.plugins.serialmonitor.ui.SerialMonitorView</implementation-class>
-        </component>
-        <component>
-            <implementation-class>com.intellij.plugins.serialmonitor.ui.status.SerialMonitorStatusComponent
-            </implementation-class>
-            <interface-class>com.intellij.plugins.serialmonitor.ui.status.SerialMonitorStatusComponent</interface-class>
         </component>
     </project-components>
 </idea-plugin>
