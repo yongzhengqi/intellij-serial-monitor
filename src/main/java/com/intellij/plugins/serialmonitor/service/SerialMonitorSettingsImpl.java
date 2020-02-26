@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 @State(
         name = "SerialMonitorSettings",
         storages = {
-                @Storage("/serialmonitor_settings.xml")
+                @Storage("serialmonitor_settings.xml")
         }
 )
 class SerialMonitorSettingsImpl implements PersistentStateComponent<Element>, SerialMonitorSettings {
