@@ -29,6 +29,7 @@ public class SerialMonitorStatusWidget implements CustomStatusBarWidget {
         mySerialService = ServiceManager.getService(project, SerialService.class);
         mySettings = ServiceManager.getService(project, SerialMonitorSettings.class);
         myPanel = new SerialMonitorStatusWidgetPanel();
+        myPanel.getComponent().setVisible(mySettings.isShowStatusWidget());
 
         portStateListener = isConnected -> {
             String text;

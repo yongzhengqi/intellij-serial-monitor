@@ -44,7 +44,7 @@ class SerialMonitorSettingsImpl implements PersistentStateComponent<Element>, Se
     private String myPortName;
     private int myBaudRate = Integer.parseInt(DEFAULT_BAUD_RATE);
     private int myLineEndingsIndex;
-    private boolean myShowStatusWidget;
+    private boolean myShowStatusWidget = true; // defaults to true
 
     public SerialMonitorSettingsImpl(Project project) {
         myProject = project;
