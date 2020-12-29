@@ -19,6 +19,10 @@ This plugin aims to leverage Arduino development with CLion by providing Serial 
 ![SerialMonitorWidget.PNG](https://bitbucket.org/repo/GdXK46/images/1180778625-SerialMonitorWidget.PNG)
 
 ## Change Notes ##
+- **0.6**
+    - publish the plugin under Apache License v.2.0
+    - remove the usage of deprecated APIs
+    - build with java11
 - **0.5.5**
     - update icons: Icons made by [Smashicons](https://www.flaticon.com/authors/smashicons) from [www.flaticon.com](https://www.flaticon.com/)
     - upgrade jssc lib to resolve issue with win10 crash on jdk11

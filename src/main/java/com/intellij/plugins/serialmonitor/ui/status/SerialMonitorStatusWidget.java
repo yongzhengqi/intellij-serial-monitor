@@ -18,6 +18,8 @@ import static com.intellij.plugins.serialmonitor.ui.SerialMonitorBundle.message;
  * @author Dmitry_Cherkas
  */
 public class SerialMonitorStatusWidget implements CustomStatusBarWidget {
+    public static final String SERIAL_MONITOR_STATUS_WIDGET_ID = "SerialMonitorStatusWidget";
+
     private final SerialService mySerialService;
     private final SerialMonitorSettings mySettings;
 
@@ -59,7 +61,7 @@ public class SerialMonitorStatusWidget implements CustomStatusBarWidget {
     @NotNull
     @Override
     public String ID() {
-        return "SerialMonitorStatusWidget";
+        return SERIAL_MONITOR_STATUS_WIDGET_ID;
     }
 
     @Override

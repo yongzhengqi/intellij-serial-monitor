@@ -29,7 +29,7 @@
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="201"/>
+    <idea-version since-build="203.3645.34"/>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html on how to target different products -->
     <depends>com.intellij.modules.lang</depends>
@@ -40,6 +40,8 @@
                     canCloseContents="false" secondary="false"/>
 
         <applicationService serviceImplementation="com.intellij.plugins.serialmonitor.ui.NotificationsService"/>
+        <notificationGroup id="Serial Monitor Notification" toolWindowId="Serial Monitor" displayType="TOOL_WINDOW"/>
+
         <applicationService serviceImplementation="com.intellij.plugins.serialmonitor.ui.console.SerialMonitorConsoleBuilderFactory"/>
 
         <projectService serviceInterface="com.intellij.plugins.serialmonitor.service.SerialService"
@@ -52,6 +54,6 @@
         <projectConfigurable key="display-name" bundle="SerialMonitorBundle" groupId="tools" id="settings.serialmonitor"
                              instance="com.intellij.plugins.serialmonitor.SerialMonitorConfigurable"/>
 
-        <statusBarWidgetProvider implementation="com.intellij.plugins.serialmonitor.ui.status.SerialMonitorStatusBarWidgetProvider"/>
+        <statusBarWidgetFactory implementation="com.intellij.plugins.serialmonitor.ui.status.SerialMonitorStatusBarWidgetProvider"/>
     </extensions>
 </idea-plugin>

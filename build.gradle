@@ -1,14 +1,11 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url 'http://dl.bintray.com/jetbrains/intellij-plugin-service' }
-    }
+plugins {
+    id 'org.jetbrains.intellij' version '0.6.5'
 }
 
-plugins {
-    id 'org.jetbrains.intellij' version '0.4.16'
+repositories {
+    mavenCentral()
 }
 
 apply plugin: 'java'

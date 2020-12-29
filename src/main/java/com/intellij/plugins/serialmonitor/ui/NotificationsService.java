@@ -2,6 +2,7 @@ package com.intellij.plugins.serialmonitor.ui;
 
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationGroup;
+import com.intellij.notification.NotificationGroupManager;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.components.ServiceManager;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +19,7 @@ public class NotificationsService {
     }
 
     public NotificationsService() {
-        notificationGroup = NotificationGroup.toolWindowGroup("Serial Monitor Notification", "Serial Monitor");
+        notificationGroup = NotificationGroupManager.getInstance().getNotificationGroup("Serial Monitor Notification");
     }
 
     public Notification createNotification(@NotNull final String content, @NotNull final NotificationType type) {
