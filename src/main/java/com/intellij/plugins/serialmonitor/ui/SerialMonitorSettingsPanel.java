@@ -9,6 +9,8 @@ import com.intellij.openapi.roots.ui.util.SimpleTextCellAppearance;
 import com.intellij.plugins.serialmonitor.service.SerialMonitorSettings;
 import com.intellij.plugins.serialmonitor.service.SerialService;
 import com.intellij.ui.ColoredListCellRenderer;
+import com.intellij.ui.NumberDocument;
+import com.intellij.ui.components.fields.IntegerField;
 import com.intellij.util.ArrayUtil;
 
 import org.apache.commons.lang.StringUtils;
@@ -23,6 +25,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicComboBoxEditor;
 
 /**
  * @author Dmitry_Cherkas
@@ -44,6 +47,19 @@ public class SerialMonitorSettingsPanel {
 
         myPortNames.addActionListener(changeListener);
         myBaudRates.addActionListener(changeListener);
+
+        class NumberEditor extends BasicComboBoxEditor {
+            @Override
+            protected JTextField createEditorComponent() {
+                JTextField editor = new IntegerField();
+                editor.setDocument(new NumberDocument());
+                editor.setBorder(null);
+                return editor;
+            }
+        }
+
+        myBaudRates.setEditor(new NumberEditor());
+        myBaudRates.addItemListener(e -> myBaudRates.setEditable(e.getItem().equals("custom")));
         myPanel.addComponentListener(changeListener);
 
         myPortNames.setRenderer(new ColoredListCellRenderer<Port>() {
