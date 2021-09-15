@@ -26,7 +26,7 @@ task initConfig(type: Copy) {
 }
 
 dependencies {
-    compile files('lib/jssc-2.9.1.jar')
+    compile files('lib/jssc-2.9.4.jar')
 }
 
 apply plugin: 'idea'
