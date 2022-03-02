@@ -1,9 +1,9 @@
-<idea-plugin url="https://bitbucket.org/dmitry_cherkas/intellij-serial-monitor">
-    <id>SerialPortMonitor</id>
-    <name>Serial Port Monitor</name>
+<idea-plugin url="https://github.com/yongzhengqi/intellij-serial-monitor">
+    <id>SerialPortMonitorMac</id>
+    <name>Serial Port Monitor for Mac</name>
     <version>@version@</version>
-    <vendor email="cherkas.da@gmail.com" url="https://github.com/dmitry-cherkas">
-        Dmitry Cherkas
+    <vendor email="yongzhengqi@gmail.com" url="https://github.com/yongzhengqi">
+        Charles Yong
     </vendor>
 
     <description><![CDATA[
@@ -45,7 +45,7 @@
         <applicationService serviceImplementation="com.intellij.plugins.serialmonitor.ui.console.SerialMonitorConsoleBuilderFactory"/>
 
         <projectService serviceInterface="com.intellij.plugins.serialmonitor.service.SerialService"
-                            serviceImplementation="com.intellij.plugins.serialmonitor.service.JsscSerialService"/>
+                        serviceImplementation="com.intellij.plugins.serialmonitor.service.JsscSerialService"/>
 
         <projectService serviceInterface="com.intellij.plugins.serialmonitor.service.SerialMonitorSettings"
                         serviceImplementation="com.intellij.plugins.serialmonitor.service.SerialMonitorSettingsImpl"/>

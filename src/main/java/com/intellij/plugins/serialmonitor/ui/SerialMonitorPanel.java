@@ -57,10 +57,8 @@ public class SerialMonitorPanel implements Disposable {
         myCommand.addKeyboardListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                // send on CTRL + ENTER
-                boolean isControlDown = e.isMetaDown() || e.isControlDown();
-                boolean isEnterDown = e.getKeyChar() == KeyEvent.VK_ENTER;
-                if (isControlDown && isEnterDown) {
+                // send on COMMAND + ENTER
+                if (e.isMetaDown() && e.getKeyCode() == 10) {
                     myCommand.hidePopup();
                     mySend.doClick();
                 }
